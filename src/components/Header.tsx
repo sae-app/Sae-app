@@ -64,24 +64,26 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <>
-      <header className="flex items-center justify-between px-4 pt-3 pb-1.5 z-20 shrink-0 select-none">
-        {/* Pojok kiri atas: Tulisan SAE ukuran besar */}
+      <header className="flex items-center justify-between px-4 pt-3.5 pb-1 z-20 shrink-0 select-none">
+        {/* Pojok kiri atas: Tulisan SAE bersih tanpa logo ekstra */}
         <div 
           onClick={handleBrandSecretTap}
-          className="cursor-pointer active:scale-95 transition-all select-none flex items-center py-0.5"
+          className="cursor-pointer active:scale-95 transition-all select-none flex flex-col py-0.5"
           title="SAE (Ketuk 3x untuk Akses Admin)"
         >
-          <span className="font-serif text-[38px] sm:text-[46px] font-black tracking-tight text-[#0f2942] drop-shadow-sm leading-none select-none">
+          <span className="font-serif text-[34px] sm:text-[38px] font-black tracking-tight text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.6)] leading-none select-none">
             SAE
+          </span>
+          <span className="font-sans text-[7.5px] sm:text-[8px] font-extrabold tracking-[0.25em] text-white/95 uppercase mt-1 drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)]">
+            LOOK GOOD • FEEL BETTER
           </span>
         </div>
 
-        {/* Action Controls */}
-        <div className="flex items-center gap-1.5 sm:gap-2">
-          {/* Kapsul [ 📲 Install App | ✕ ] (Jika ditutup, seluruh kapsul & tombol X lenyap permanen) */}
+        {/* Action Controls: Notification Bell & Settings/Sliders button */}
+        <div className="flex items-center gap-2">
+          {/* Kapsul [ 📲 Install App | ✕ ] */}
           {!isInstalled && !isDismissed && (
             <div className="flex items-center rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-xs border border-white/40 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-              {/* Bagian Tombol Install App */}
               <button
                 onClick={handleInstallClick}
                 aria-label="Install Aplikasi SAE"
@@ -91,11 +93,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <Download className="w-3 h-3 text-white shrink-0" />
                 <span className="whitespace-nowrap">Install</span>
               </button>
-
-              {/* Garis Pembatas Tipis */}
               <div className="w-[1px] h-3 bg-white/30" />
-
-              {/* Tombol [X] Penutup (Klik untuk hilangkan kapsul selamanya) */}
               <button
                 onClick={handleDismiss}
                 aria-label="Tutup dan sembunyikan ajakan install"
@@ -107,16 +105,26 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
           )}
 
-          {/* Lonceng Notifikasi */}
+          {/* Lonceng Notifikasi Bulat Transparan Kaca */}
           <button
             onClick={onOpenNotifications}
             aria-label="Notifikasi"
-            className="relative w-9 h-9 rounded-full bg-white/85 hover:bg-white text-slate-700 flex items-center justify-center shadow-xs hover:shadow-sm transition-all active:scale-95 border border-white/90 backdrop-blur-md cursor-pointer"
+            className="relative w-9 h-9 rounded-full bg-white/25 hover:bg-white/35 text-white flex items-center justify-center shadow-md transition-all active:scale-95 border border-white/40 backdrop-blur-md cursor-pointer"
           >
-            <Bell className="w-4 h-4 text-slate-700" strokeWidth={2.2} />
+            <Bell className="w-4 h-4 text-white drop-shadow-xs" strokeWidth={2.2} />
             {unreadCount > 0 && (
-              <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-blue-600 ring-2 ring-white animate-pulse" />
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-white animate-pulse" />
             )}
+          </button>
+
+          {/* Tombol Pengaturan / Admin (Sesuai Referensi Gambar) */}
+          <button
+            onClick={onOpenAdmin}
+            aria-label="Pengaturan Admin"
+            title="Pengaturan Admin SAE"
+            className="w-9 h-9 rounded-full bg-white/25 hover:bg-white/35 text-white flex items-center justify-center shadow-md transition-all active:scale-95 border border-white/40 backdrop-blur-md cursor-pointer"
+          >
+            <Smartphone className="w-4 h-4 text-white drop-shadow-xs" strokeWidth={2.2} />
           </button>
         </div>
       </header>

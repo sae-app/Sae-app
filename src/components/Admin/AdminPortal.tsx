@@ -27,6 +27,9 @@ import {
   AlertCircle,
   X,
   ArrowLeft,
+  ArrowRight,
+  ArrowUp,
+  ArrowDown,
   MoveHorizontal,
   MoveVertical,
   Plus,
@@ -95,7 +98,6 @@ type AdminTab =
   | 'dashboard' 
   | 'discover' 
   | 'tips' 
-  | 'mascot' 
   | 'media' 
   | 'feedback' 
   | 'web_settings' 
@@ -1183,17 +1185,6 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ isOpen, onClose }) => 
                   Media & Visual
                 </p>
                 <button
-                  onClick={() => { setActiveTab('mascot'); setSidebarOpen(false); }}
-                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium transition-all cursor-pointer ${
-                    activeTab === 'mascot'
-                      ? 'bg-blue-600 text-white font-bold'
-                      : 'text-slate-300 hover:bg-slate-800/70 hover:text-white'
-                  }`}
-                >
-                  <User className="w-4 h-4 shrink-0" />
-                  <span>Maskot Fleksibel</span>
-                </button>
-                <button
                   onClick={() => { setActiveTab('media'); setSidebarOpen(false); }}
                   className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium transition-all cursor-pointer ${
                     activeTab === 'media'
@@ -1409,22 +1400,18 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ isOpen, onClose }) => 
                         </div>
                       </div>
 
-                      {/* Stay Creative Mascot Card */}
-                      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-sky-400 via-blue-500 to-indigo-600 text-white px-4 py-2.5 sm:px-5 sm:py-3 shadow-md shadow-blue-500/20 flex items-center justify-between">
+                      {/* SAE Studio Brand Card */}
+                      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-600 text-white px-4 py-2.5 sm:px-5 sm:py-3 shadow-md shadow-blue-500/20 flex items-center justify-between gap-3">
                         <div className="space-y-0.5 z-10">
-                          <span className="font-handwritten text-lg sm:text-xl font-bold tracking-wide drop-shadow-sm">
-                            Stay Creative
+                          <span className="font-serif italic text-lg sm:text-xl font-bold tracking-wide drop-shadow-sm">
+                            SAE Studio
                           </span>
-                          <p className="text-[10px] text-blue-100 font-medium max-w-[160px] leading-tight">
-                            Bersama SAE kita bisa lebih baik
+                          <p className="text-[10px] text-blue-100 font-medium max-w-[170px] leading-tight">
+                            See Your Better Style • AI Assistant
                           </p>
                         </div>
-                        <div className="w-14 h-14 sm:w-16 sm:h-16 shrink-0 pointer-events-none">
-                          <img
-                            src="/src/assets/images/sae_mascot.png"
-                            alt="SAE Mascot"
-                            className="w-full h-full object-contain filter drop-shadow-md"
-                          />
+                        <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center shrink-0 border border-white/20 shadow-inner">
+                          <Sparkles className="w-5 h-5 text-white" />
                         </div>
                       </div>
                     </div>
@@ -1855,132 +1842,96 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ isOpen, onClose }) => 
 
                         {/* Mobile Phone Frame */}
                         <div 
-                          className="relative mx-auto w-full max-w-[320px] h-[460px] rounded-[32px] overflow-hidden border-4 border-slate-700/80 shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex flex-col justify-between select-none bg-slate-900"
+                          className="relative mx-auto w-full max-w-[320px] h-[480px] rounded-[32px] overflow-hidden border-4 border-slate-700/80 shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex flex-col justify-between select-none bg-slate-900"
                         >
-                          {/* Wallpaper Background Asli (Monas Golden Hour) */}
+                          {/* Wallpaper Background Dinamis */}
                           <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
                             <img
-                              src={bgConfig.imageUrl || "/src/assets/images/jakarta_monas_bg_1792081781159.jpg"}
+                              src={bgConfig.imageUrl || "/src/assets/images/sae_home_wallpaper.jpg"}
                               alt="Wallpaper Background"
-                              className="w-full h-full object-cover scale-105 filter brightness-105"
+                              style={{
+                                opacity: typeof bgConfig.opacity === 'number' ? Math.max(0.1, bgConfig.opacity / 100) : 1,
+                                filter: `blur(${bgConfig.blur ?? 0}px)`
+                              }}
+                              className="w-full h-full object-cover scale-105"
                             />
-                            <div className="absolute inset-0 bg-gradient-to-b from-white/35 via-transparent to-black/20 pointer-events-none" />
+                            <div className="absolute inset-0 bg-gradient-to-r from-black/25 via-transparent to-transparent pointer-events-none" />
                           </div>
-
-
 
                           {/* Top Punch Hole & SAE Brand */}
-                          <div className="relative z-10 flex items-center justify-between px-3.5 pt-2 pb-1 pointer-events-none">
-                            <span className="font-serif text-[20px] font-black text-[#0f2942] tracking-tight leading-none drop-shadow-xs">SAE</span>
-                            <div className="w-2.5 h-2.5 rounded-full bg-black/60 border border-white/20 shadow-xs" />
-                            <div className="flex items-center gap-1 opacity-90">
-                              <span className="text-[7.5px] font-bold text-white bg-blue-600/90 px-1.5 py-0.5 rounded-full shadow-2xs">Install</span>
-                              <span className="w-4 h-4 rounded-full bg-white/70 flex items-center justify-center text-[7px] text-slate-800 shadow-2xs">🔔</span>
+                          <div className="relative z-10 flex items-center justify-between px-3.5 pt-2.5 pb-1 pointer-events-none">
+                            <div className="flex flex-col">
+                              <span className="font-serif text-[18px] font-black text-white tracking-tight leading-none drop-shadow-md">SAE</span>
+                              <span className="text-[5.5px] font-bold tracking-[0.2em] text-white/90 uppercase mt-0.5">LOOK GOOD • FEEL BETTER</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <span className="w-5 h-5 rounded-full bg-white/30 backdrop-blur-xs flex items-center justify-center text-[8px] text-white shadow-xs">🔔</span>
+                              <span className="w-5 h-5 rounded-full bg-white/30 backdrop-blur-xs flex items-center justify-center text-[8px] text-white shadow-xs">⚙️</span>
                             </div>
                           </div>
 
-                          {/* Editorial Greeting Hero ("Hai, kamu!") */}
-                          <div className="relative z-10 px-3.5 pt-7 pb-1 pointer-events-none">
-                            <h3 className="font-serif text-[22px] font-black text-[#0f2942] leading-tight drop-shadow-xs">
-                              Hai, kamu!
+                          {/* Editorial Greeting Hero ("Hai, kamu! ♡") */}
+                          <div className="relative z-10 px-3.5 pt-6 pb-1 pointer-events-none flex flex-col items-start max-w-[170px]">
+                            <span className="font-serif italic text-[18px] text-white drop-shadow-md leading-tight">Hai,</span>
+                            <h3 className="font-serif text-[20px] font-black text-white leading-none drop-shadow-md flex items-center gap-1">
+                              <span>kamu!</span>
+                              <span className="text-[14px]">♡</span>
                             </h3>
-                            <div className="inline-flex items-center gap-1 px-3 py-1.5 mt-2 rounded-full bg-gradient-to-r from-[#0c377c] via-[#1452b4] to-[#2563eb] text-white text-[9px] font-extrabold shadow-sm">
+                            <p className="text-[8px] text-white/90 leading-tight mt-1 drop-shadow-xs">
+                              Temukan outfit terbaikmu dengan analisis AI yang mudah dan cepat.
+                            </p>
+                            <div className="w-8 h-[1px] bg-white/70 rounded-full my-1.5" />
+                            <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-blue-600 text-white text-[8px] font-extrabold shadow-sm">
                               <span>Mulai Analisis</span>
-                              <span className="text-[8px]">→</span>
+                              <span className="text-[7px]">→</span>
+                            </div>
+
+                            {/* 3 Menu Cepat Mini */}
+                            <div className="flex flex-col gap-1 mt-2.5 w-full">
+                              <div className="px-2 py-1 rounded-lg bg-black/30 backdrop-blur-xs text-[7.5px] font-bold text-white flex items-center justify-between border border-white/20">
+                                <span>💡 Tips Harian</span>
+                                <span>›</span>
+                              </div>
+                              <div className="px-2 py-1 rounded-lg bg-black/30 backdrop-blur-xs text-[7.5px] font-bold text-white flex items-center justify-between border border-white/20">
+                                <span>👗 Inspirasi Outfit</span>
+                                <span>›</span>
+                              </div>
+                              <div className="px-2 py-1 rounded-lg bg-black/30 backdrop-blur-xs text-[7.5px] font-bold text-white flex items-center justify-between border border-white/20">
+                                <span>⭐ Tren Style</span>
+                                <span>›</span>
+                              </div>
                             </div>
                           </div>
 
-                          {/* MASKOT CHIBI BERDIRI BERSIH (TANPA BALON & SPANDUK) */}
-                          <div className="relative w-full z-20 mt-auto flex items-end justify-end pr-3 pb-3">
-                            {/* Maskot Chibi Interaktif */}
-                            <div
-                              onPointerDown={handlePointerDownMascot}
+                          {/* Live Simulator Mascot (Jika latar belakang bukan wallpaper menyatu dengan karakter) */}
+                          {!bgConfig.imageUrl?.includes('sae_home_wallpaper') && (
+                            <div 
+                              className="absolute right-2 bottom-12 z-20 flex flex-col items-center pointer-events-none"
                               style={{
-                                transform: `translate(${mascotOffsetX}px, ${mascotOffsetY}px)`,
+                                transform: `translate(${Math.round(mascotOffsetX * 0.7)}px, ${Math.round(mascotOffsetY * 0.7)}px)`
                               }}
-                              className={`relative shrink-0 transition-transform duration-75 z-20 cursor-grab active:cursor-grabbing group ${
-                                isDraggingMascot ? 'scale-105' : 'hover:scale-105'
-                              }`}
-                              title="Klik & seret untuk memposisikan maskot"
                             >
-                              <div 
-                                style={{ width: `${Math.round(customSize * 0.45)}px` }}
-                                className="absolute bottom-0 left-1/2 -translate-x-1/2 h-2 bg-slate-950/20 rounded-full blur-[2px] pointer-events-none" 
-                              />
+                              <div className="w-16 h-2 rounded-full bg-black/40 blur-[3px]" />
                               <img
-                                src={previewImage}
-                                alt="Mascot Preview"
+                                src={previewImage || '/src/assets/images/sae_original_girl_actual.png'}
+                                alt="Maskot Preview"
                                 style={{
-                                  height: `${Math.round(customSize * 0.7)}px`,
-                                  maxHeight: `${Math.round(customSize * 0.7)}px`,
+                                  height: `${Math.round((customSize || 230) * 0.6)}px`
                                 }}
-                                className="w-auto object-contain drop-shadow-[0_8px_16px_rgba(15,23,42,0.35)] select-none pointer-events-none"
+                                className="object-contain filter drop-shadow-md"
                               />
                             </div>
+                          )}
+
+                          {/* Bottom Dock Bar */}
+                          <div className="relative z-10 mx-2.5 mb-2.5 h-8 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-around px-3 border border-white/70 shadow-sm pointer-events-none">
+                            <span className="text-[8px] font-bold text-blue-600">Home</span>
+                            <span className="text-[8px] text-slate-500">Toko</span>
+                            <div className="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-[8px] font-bold shadow-xs">●</div>
+                            <span className="text-[8px] text-slate-500">Hasil</span>
+                            <span className="text-[8px] text-slate-500">Profil</span>
                           </div>
 
-                        </div>
-
-                        {/* Live Coordinates Readout */}
-                        <div className="flex items-center justify-between px-2.5 py-1.5 text-[10px] text-slate-300 font-mono bg-slate-900/90 rounded-xl border border-slate-800">
-                          <span>Posisi X: <strong className="text-blue-400">{mascotOffsetX}px</strong></span>
-                          <span>Posisi Y: <strong className="text-blue-400">{mascotOffsetY}px</strong></span>
-                          <span>Ukuran: <strong className="text-cyan-400">{customSize}px</strong></span>
-                        </div>
-
-                        {/* D-Pad Arrow Controls */}
-                        <div className="pt-1 border-t border-slate-800/80">
-                          <p className="text-[10px] font-bold text-slate-300 mb-1.5 text-center">
-                            Tombol Geser Presisi Maskot:
-                          </p>
-                          <div className="flex flex-col items-center gap-1">
-                            <button
-                              type="button"
-                              onClick={() => updateMascotState({ offsetY: Math.max(-140, mascotOffsetY - 5) })}
-                              className="px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-white text-[11px] font-bold border border-slate-700 shadow-xs cursor-pointer active:scale-95 flex items-center gap-1"
-                              title="Geser Maskot Naik 5px"
-                            >
-                              <span>▲ Naik</span>
-                            </button>
-
-                            <div className="flex items-center gap-1.5">
-                              <button
-                                type="button"
-                                onClick={() => updateMascotState({ offsetX: Math.max(-230, mascotOffsetX - 5) })}
-                                className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-white text-[11px] font-bold border border-slate-700 shadow-xs cursor-pointer active:scale-95 flex items-center gap-1"
-                                title="Geser Maskot ke Kiri 5px"
-                              >
-                                <span>◄ Kiri</span>
-                              </button>
-
-                              <button
-                                type="button"
-                                onClick={() => updateMascotState({ offsetX: 0, offsetY: 0 })}
-                                className="px-3 py-1 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-[10.5px] font-extrabold shadow-sm cursor-pointer active:scale-95 whitespace-nowrap"
-                                title="Kembalikan Posisi Pas di Atas Profile (0, 0)"
-                              >
-                                🎯 Pas (0, 0)
-                              </button>
-
-                              <button
-                                type="button"
-                                onClick={() => updateMascotState({ offsetX: Math.min(100, mascotOffsetX + 5) })}
-                                className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-white text-[11px] font-bold border border-slate-700 shadow-xs cursor-pointer active:scale-95 flex items-center gap-1"
-                                title="Geser Maskot ke Kanan 5px"
-                              >
-                                <span>Kanan ►</span>
-                              </button>
-                            </div>
-
-                            <button
-                              type="button"
-                              onClick={() => updateMascotState({ offsetY: Math.min(60, mascotOffsetY + 5) })}
-                              className="px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-white text-[11px] font-bold border border-slate-700 shadow-xs cursor-pointer active:scale-95 flex items-center gap-1"
-                              title="Geser Maskot Turun 5px"
-                            >
-                              <span>▼ Turun</span>
-                            </button>
-                          </div>
                         </div>
 
                       </div>
@@ -1988,127 +1939,256 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ isOpen, onClose }) => 
                     </div>
 
                     {/* ======================================================== */}
-                    {/* KOLOM KANAN: PENGATURAN MASKOT & KONTEN FOKUS            */}
+                    {/* KOLOM KANAN: PILIHAN MASKOT, UKURAN, & POSISI           */}
                     {/* ======================================================== */}
                     <div className="lg:col-span-7 space-y-4">
                       
-                      {/* CARD 1: Pilihan Karakter & Upload Maskot */}
-                      <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-2xs space-y-3">
-                        <div className="flex items-center justify-between gap-2">
-                          <div>
-                            <h3 className="text-xs sm:text-sm font-bold text-slate-800 flex items-center gap-1.5">
-                              <span>Karakter Maskot SAE</span>
-                            </h3>
-                            <p className="text-[10.5px] text-slate-500">Pilih karakter maskot atau upload gambar PNG transparan baru</p>
+                      {/* CARD 1: Pilihan Karakter & Upload Maskot Bebas */}
+                      <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-2xs space-y-3.5">
+                        <div className="flex items-center justify-between gap-2 pb-2.5 border-b border-slate-100">
+                          <div className="flex items-center gap-2">
+                            <div className="w-8 h-8 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-sm shrink-0">
+                              <User className="w-4 h-4" />
+                            </div>
+                            <div>
+                              <h3 className="text-xs sm:text-sm font-bold text-slate-900 flex items-center gap-1.5">
+                                <span>Pilihan Karakter & Maskot SAE</span>
+                              </h3>
+                              <p className="text-[10.5px] text-slate-500">Pilih karakter bawaan atau unggah foto maskot Anda sendiri.</p>
+                            </div>
                           </div>
-                          <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*" className="hidden" />
+
                           <button
                             type="button"
                             onClick={() => fileInputRef.current?.click()}
                             disabled={isCompressing}
-                            className="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-xs transition-colors shrink-0"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold cursor-pointer transition-all shadow-xs shrink-0"
                           >
                             <Upload className="w-3.5 h-3.5" />
-                            <span>{isCompressing ? 'Memproses...' : 'Upload Maskot'}</span>
+                            <span>{isCompressing ? 'Mengompres...' : 'Unggah Maskot Sendiri'}</span>
                           </button>
                         </div>
 
-                        {/* 3 Preset Avatar Cards */}
-                        <div className="grid grid-cols-3 gap-2.5">
-                          <button
-                            type="button"
-                            onClick={() => updateMascotState({ imageUrl: '/src/assets/images/sae_chibi_girl_cutout.png' })}
-                            className={`p-2.5 rounded-xl border flex flex-col items-center gap-1 cursor-pointer transition-all ${
-                              previewImage.includes('sae_chibi_girl_cutout')
-                                ? 'bg-blue-50/80 border-blue-500 ring-2 ring-blue-300'
-                                : 'bg-white border-slate-200 hover:border-slate-300'
-                            }`}
-                          >
-                            <img src="/src/assets/images/sae_chibi_girl_cutout.png" alt="Chibi Girl" className="w-12 h-12 object-contain drop-shadow-xs" />
-                            <span className="text-[11px] font-bold text-slate-800 text-center leading-tight">Chibi Girl</span>
-                            <span className="text-[8.5px] text-blue-600 font-extrabold">★ Sesuai Referensi</span>
-                          </button>
-
-                          <button
-                            type="button"
-                            onClick={() => updateMascotState({ imageUrl: '/src/assets/images/mascot_transparent.png' })}
-                            className={`p-2.5 rounded-xl border flex flex-col items-center gap-1 cursor-pointer transition-all ${
-                              previewImage.includes('mascot_transparent')
-                                ? 'bg-blue-50/80 border-blue-500 ring-2 ring-blue-300'
-                                : 'bg-white border-slate-200 hover:border-slate-300'
-                            }`}
-                          >
-                            <img src="/src/assets/images/mascot_transparent.png" alt="Chibi Boy" className="w-12 h-12 object-contain drop-shadow-xs" />
-                            <span className="text-[11px] font-bold text-slate-800 text-center leading-tight">Chibi Boy</span>
-                            <span className="text-[8.5px] text-slate-500 font-semibold">Thumbs Up</span>
-                          </button>
-
-                          <button
-                            type="button"
-                            onClick={() => updateMascotState({ imageUrl: '/src/assets/images/sae_mascot.png' })}
-                            className={`p-2.5 rounded-xl border flex flex-col items-center gap-1 cursor-pointer transition-all ${
-                              previewImage.includes('sae_mascot')
-                                ? 'bg-blue-50/80 border-blue-500 ring-2 ring-blue-300'
-                                : 'bg-white border-slate-200 hover:border-slate-300'
-                            }`}
-                          >
-                            <img src="/src/assets/images/sae_mascot.png" alt="Classic" className="w-12 h-12 object-contain drop-shadow-xs" />
-                            <span className="text-[11px] font-bold text-slate-800 text-center leading-tight">SAE Classic</span>
-                            <span className="text-[8.5px] text-slate-500 font-semibold">Original</span>
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* CARD 2: Ukuran Maskot */}
-                      <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-2xs space-y-2.5">
-                        <div className="flex items-center justify-between text-xs">
-                          <span className="font-bold text-slate-800 flex items-center gap-1.5">
-                            <Maximize2 className="w-4 h-4 text-blue-600" />
-                            <span>Ukuran Maskot</span>
-                          </span>
-                          <span className="font-extrabold text-blue-600 text-sm">{customSize}px</span>
-                        </div>
-
-                        {/* Presets Cepat Ukuran */}
-                        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
-                          {[
-                            { label: 'Sedang (130px)', val: 130 },
-                            { label: 'Standar (170px) ★', val: 170 },
-                            { label: 'Besar (200px)', val: 200 },
-                            { label: 'Jumbo (240px)', val: 240 }
-                          ].map((sz) => (
-                            <button
-                              key={sz.val}
-                              type="button"
-                              onClick={() => updateMascotState({ customSize: sz.val })}
-                              className={`px-3 py-1.5 rounded-lg text-[10.5px] font-bold cursor-pointer transition-all shrink-0 ${
-                                customSize === sz.val
-                                  ? 'bg-blue-600 text-white shadow-xs'
-                                  : 'bg-slate-50 border border-slate-200 text-slate-700 hover:bg-slate-100'
-                              }`}
-                            >
-                              {sz.label}
-                            </button>
-                          ))}
-                        </div>
-
+                        {/* Hidden file input */}
                         <input
-                          type="range"
-                          min="100"
-                          max="250"
-                          step="2"
-                          value={customSize}
-                          onChange={(e) => updateMascotState({ customSize: Number(e.target.value) })}
-                          className="w-full accent-blue-600 cursor-pointer h-2"
+                          type="file"
+                          ref={fileInputRef}
+                          onChange={handleFileChange}
+                          accept="image/png,image/jpeg,image/webp"
+                          className="hidden"
                         />
-                        <div className="flex justify-between text-[9.5px] text-slate-400">
-                          <span>100px (Kecil)</span>
-                          <span className="text-blue-600 font-bold">170px (Standar Referensi)</span>
-                          <span>250px (Jumbo)</span>
+
+                        {/* Grid Pilihan Karakter Cepat */}
+                        <div className="space-y-1.5">
+                          <label className="text-[11px] font-bold text-slate-700 block">Karakter Tersedia (Klik untuk Memilih):</label>
+                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                            {[
+                              {
+                                id: 'original_girl',
+                                name: 'Karakter Asli SAE',
+                                tag: 'Nana Kin Resmi',
+                                url: '/src/assets/images/sae_original_girl_actual.png'
+                              },
+                              {
+                                id: 'chibi_cutout',
+                                name: 'Chibi SAE Cute',
+                                tag: 'Gaya Imut Sticker',
+                                url: '/src/assets/images/sae_chibi_girl_cutout.png'
+                              },
+                              {
+                                id: 'chibi_tshirt',
+                                name: 'Chibi T-Shirt',
+                                tag: 'Casual Streetwear',
+                                url: '/src/assets/images/sae_chibi_girl_tshirt.png'
+                              },
+                              {
+                                id: 'sae_mascot',
+                                name: 'Maskot Original',
+                                tag: 'Logo Klasik SAE',
+                                url: '/src/assets/images/sae_mascot.png'
+                              },
+                              {
+                                id: 'girl_real',
+                                name: 'Karakter Real Look',
+                                tag: 'Model Estetik',
+                                url: '/src/assets/images/sae_girl_real.png'
+                              }
+                            ].map((char) => {
+                              const isSelected = previewImage === char.url;
+                              return (
+                                <button
+                                  key={char.id}
+                                  type="button"
+                                  onClick={() => updateMascotState({ imageUrl: char.url })}
+                                  className={`p-2 rounded-xl border text-left flex items-center gap-2 cursor-pointer transition-all ${
+                                    isSelected
+                                      ? 'bg-blue-50/80 border-blue-500 shadow-xs ring-1 ring-blue-500/30'
+                                      : 'bg-slate-50 hover:bg-slate-100 border-slate-200'
+                                  }`}
+                                >
+                                  <div className="w-10 h-10 rounded-lg bg-white border border-slate-200 flex items-center justify-center overflow-hidden shrink-0 p-0.5">
+                                    <img src={char.url} alt={char.name} className="w-full h-full object-contain" />
+                                  </div>
+                                  <div className="overflow-hidden">
+                                    <span className="block font-bold text-[11px] text-slate-800 truncate leading-tight">{char.name}</span>
+                                    <span className={`text-[9px] font-medium truncate block ${isSelected ? 'text-blue-600 font-bold' : 'text-slate-400'}`}>
+                                      {char.tag}
+                                    </span>
+                                  </div>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+
+                        {/* Indikator Karakter Terpilih */}
+                        <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs">
+                          <div className="flex items-center gap-2 truncate">
+                            <span className="text-[10.5px] text-slate-500">Maskot Aktif:</span>
+                            <span className="font-bold text-slate-800 text-[11px] truncate">
+                              {previewImage.startsWith('data:') ? 'Foto Kustom Unggahan Pengguna' : previewImage.split('/').pop()}
+                            </span>
+                          </div>
+                          <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 shrink-0">
+                            Aktif
+                          </span>
                         </div>
                       </div>
 
-                      {/* CARD 3: Suara & Sapaan Maskot (TTS Audio) */}
+                      {/* CARD 2: Ukuran & Posisi Maskot (D-Pad & Slider) */}
+                      <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-2xs space-y-3.5">
+                        <div className="flex items-center justify-between gap-2 pb-2 border-b border-slate-100">
+                          <div className="flex items-center gap-2">
+                            <div className="w-8 h-8 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-sm shrink-0">
+                              <Sliders className="w-4 h-4" />
+                            </div>
+                            <div>
+                              <h3 className="text-xs sm:text-sm font-bold text-slate-900">Ukuran & Posisi Maskot di Layar</h3>
+                              <p className="text-[10.5px] text-slate-500">Sesuaikan proporsi dan titik letak maskot.</p>
+                            </div>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setCustomSize(230);
+                              setMascotOffsetX(0);
+                              setMascotOffsetY(0);
+                              updateMascotState({ customSize: 230, offsetX: 0, offsetY: 0 });
+                            }}
+                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 text-[10.5px] font-bold cursor-pointer transition-colors"
+                            title="Kembalikan ukuran dan posisi ke ideal"
+                          >
+                            <RotateCcw className="w-3 h-3" />
+                            <span>Reset Posisi</span>
+                          </button>
+                        </div>
+
+                        {/* Slider Ukuran */}
+                        <div className="space-y-1.5 p-3 rounded-xl bg-slate-50 border border-slate-200">
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="font-bold text-slate-700">Tinggi Maskot</span>
+                            <span className="font-bold text-blue-600">{customSize} px</span>
+                          </div>
+                          <input
+                            type="range"
+                            min="120"
+                            max="320"
+                            step="5"
+                            value={customSize}
+                            onChange={(e) => updateMascotState({ customSize: Number(e.target.value) })}
+                            className="w-full accent-blue-600 cursor-pointer h-2"
+                          />
+                          <div className="flex justify-between items-center pt-1 text-[10px]">
+                            <button
+                              type="button"
+                              onClick={() => updateMascotState({ customSize: 160 })}
+                              className="px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-600 hover:text-blue-600"
+                            >
+                              Kecil (160px)
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => updateMascotState({ customSize: 230 })}
+                              className="px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-600 hover:text-blue-600 font-bold"
+                            >
+                              Standar (230px)
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => updateMascotState({ customSize: 280 })}
+                              className="px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-600 hover:text-blue-600"
+                            >
+                              Besar (280px)
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* D-Pad Tombol Arah */}
+                        <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3">
+                          <div>
+                            <span className="font-bold text-xs text-slate-800 block">Geser Titik Posisi Maskot (D-Pad)</span>
+                            <span className="text-[10px] text-slate-500">
+                              Koordinat saat ini: X: {mascotOffsetX}px, Y: {mascotOffsetY}px
+                            </span>
+                          </div>
+
+                          <div className="flex flex-col items-center gap-1 select-none">
+                            {/* Tombol Atas */}
+                            <button
+                              type="button"
+                              onClick={() => updateMascotState({ offsetY: Math.max(-120, mascotOffsetY - 10) })}
+                              className="w-8 h-8 rounded-lg bg-white hover:bg-blue-50 active:bg-blue-100 border border-slate-300 text-slate-700 flex items-center justify-center cursor-pointer shadow-2xs font-bold"
+                              title="Geser ke Atas"
+                            >
+                              <ArrowUp className="w-3.5 h-3.5" />
+                            </button>
+
+                            {/* Tombol Kiri, Tengah Reset, Kanan */}
+                            <div className="flex items-center gap-1">
+                              <button
+                                type="button"
+                                onClick={() => updateMascotState({ offsetX: Math.max(-150, mascotOffsetX - 10) })}
+                                className="w-8 h-8 rounded-lg bg-white hover:bg-blue-50 active:bg-blue-100 border border-slate-300 text-slate-700 flex items-center justify-center cursor-pointer shadow-2xs font-bold"
+                                title="Geser ke Kiri"
+                              >
+                                <ArrowLeft className="w-3.5 h-3.5" />
+                              </button>
+                              
+                              <button
+                                type="button"
+                                onClick={() => updateMascotState({ offsetX: 0, offsetY: 0 })}
+                                className="w-8 h-8 rounded-lg bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 text-[10px] font-extrabold flex items-center justify-center cursor-pointer"
+                                title="Kembali ke Tengah"
+                              >
+                                0
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => updateMascotState({ offsetX: Math.min(100, mascotOffsetX + 10) })}
+                                className="w-8 h-8 rounded-lg bg-white hover:bg-blue-50 active:bg-blue-100 border border-slate-300 text-slate-700 flex items-center justify-center cursor-pointer shadow-2xs font-bold"
+                                title="Geser ke Kanan"
+                              >
+                                <ArrowRight className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+
+                            {/* Tombol Bawah */}
+                            <button
+                              type="button"
+                              onClick={() => updateMascotState({ offsetY: Math.min(80, mascotOffsetY + 10) })}
+                              className="w-8 h-8 rounded-lg bg-white hover:bg-blue-50 active:bg-blue-100 border border-slate-300 text-slate-700 flex items-center justify-center cursor-pointer shadow-2xs font-bold"
+                              title="Geser ke Bawah"
+                            >
+                              <ArrowDown className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </div>
+
+                      </div>
+
+                      {/* CARD 2: Suara & Sapaan Maskot (TTS Audio) */}
                       <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-2xs space-y-3">
                         <div className="flex items-center justify-between gap-2 pb-2 border-b border-slate-100">
                           <div className="flex items-center gap-2">
@@ -2117,23 +2197,19 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ isOpen, onClose }) => 
                             </div>
                             <div>
                               <h3 className="text-xs sm:text-sm font-extrabold text-slate-900 flex items-center gap-2">
-                                <span>Suara & Sapaan Maskot (TTS Audio)</span>
+                                <span>Suara & Sapaan Karakter (TTS Audio)</span>
                               </h3>
                               <p className="text-[10.5px] text-slate-500">
-                                Kalimat yang diucapkan oleh maskot SAE saat diketuk di layar Home.
+                                Kalimat yang diucapkan oleh karakter SAE saat diketuk oleh pengunjung di layar Home.
                               </p>
                             </div>
                           </div>
-
-                          <span className="px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 text-[10px] font-bold border border-slate-200 shrink-0">
-                            ✨ Balon & Spanduk Nonaktif
-                          </span>
                         </div>
 
                         <div className="space-y-3">
                           <div className="flex items-center justify-between">
                             <label className="block text-xs font-bold text-slate-800">
-                              Kalimat Sapaan Maskot
+                              Kalimat Sapaan Karakter
                             </label>
                             <button
                               type="button"
@@ -2142,7 +2218,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ isOpen, onClose }) => 
                                   if ('speechSynthesis' in window) {
                                     window.speechSynthesis.cancel();
                                     const utterance = new SpeechSynthesisUtterance(
-                                      (quoteText || 'Hai! Aku SAE di sini! ♡').replace(/[♡✨📸◡̈🌸]/g, '')
+                                      (quoteText || 'Hai! Aku SAE, senang bertemu denganmu! ♡').replace(/[♡✨📸◡̈🌸]/g, '')
                                     );
                                     utterance.lang = 'id-ID';
                                     utterance.rate = 1.05;
@@ -2163,17 +2239,17 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ isOpen, onClose }) => 
                             rows={2}
                             value={quoteText}
                             onChange={(e) => updateMascotState({ companionQuote: e.target.value })}
-                            placeholder="Ketik kalimat sapaan, contoh: Hai! Aku SAE di sini! ♡"
+                            placeholder="Ketik kalimat sapaan, contoh: Hai! Aku SAE, senang bertemu denganmu! ♡"
                             className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-blue-500 font-medium"
                           />
 
                           <div className="flex items-center gap-1.5 flex-wrap pt-0.5">
                             <span className="text-[10px] text-slate-400 font-bold">Preset cepat:</span>
                             {[
-                              'Hai! Aku SAE di sini! ♡',
+                              'Hai! Aku SAE, senang bertemu denganmu! ♡',
                               'Outfit kamu kece banget hari ini! ✨',
-                              'Yuk cek cermin, aku bantu nilai ya! 📸',
-                              'Senyum dulu yuk, auto makin cakep! ◡̈'
+                              'Yuk mulai analisis gaya kamu sekarang! 📸',
+                              'Senyum dulu yuk, auto makin memesona! ◡̈'
                             ].map((preset) => (
                               <button
                                 key={preset}
@@ -2283,18 +2359,32 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ isOpen, onClose }) => 
                     {/* Presets Background */}
                     <div className="space-y-1.5">
                       <label className="text-[11px] font-bold text-slate-700">Pilihan Latar Belakang Cepat</label>
-                      <div className="grid grid-cols-2 gap-2">
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                         <button
                           type="button"
-                          onClick={() => setBgConfig(prev => ({ ...prev, imageUrl: '/src/assets/images/jakarta_monas_bg_1792081781159.jpg', opacity: 55, blur: 0 }))}
+                          onClick={() => setBgConfig(prev => ({ ...prev, imageUrl: '/src/assets/images/sae_home_wallpaper.jpg', opacity: 100, blur: 0 }))}
                           className="p-2 rounded-xl border border-slate-200 bg-slate-50 hover:bg-blue-50 text-left text-xs font-semibold text-slate-700 flex items-center gap-2 cursor-pointer transition-colors"
                         >
                           <div className="w-8 h-8 rounded-lg overflow-hidden shrink-0 border border-slate-200">
-                            <img src="/src/assets/images/jakarta_monas_bg_1792081781159.jpg" alt="Monas Golden Hour" className="w-full h-full object-cover" />
+                            <img src="/src/assets/images/sae_home_wallpaper.jpg" alt="Monas Sunset SAE" className="w-full h-full object-cover" />
                           </div>
                           <div>
-                            <span className="block font-bold text-slate-900 leading-tight">Monas Jakarta</span>
-                            <span className="text-[9.5px] text-blue-600 font-medium">Sesuai Referensi</span>
+                            <span className="block font-bold text-slate-900 leading-tight">Monas Sunset SAE</span>
+                            <span className="text-[9.5px] text-purple-600 font-bold">All-in-One Referensi</span>
+                          </div>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => setBgConfig(prev => ({ ...prev, imageUrl: '/src/assets/images/jakarta_monas_bg_1792081781159.jpg', opacity: 60, blur: 0 }))}
+                          className="p-2 rounded-xl border border-slate-200 bg-slate-50 hover:bg-blue-50 text-left text-xs font-semibold text-slate-700 flex items-center gap-2 cursor-pointer transition-colors"
+                        >
+                          <div className="w-8 h-8 rounded-lg overflow-hidden shrink-0 border border-slate-200">
+                            <img src="/src/assets/images/jakarta_monas_bg_1792081781159.jpg" alt="Monas Bersih" className="w-full h-full object-cover" />
+                          </div>
+                          <div>
+                            <span className="block font-bold text-slate-900 leading-tight">Monas Bersih</span>
+                            <span className="text-[9.5px] text-blue-600 font-medium">Bisa Pasang Maskot</span>
                           </div>
                         </button>
 

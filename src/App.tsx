@@ -221,22 +221,22 @@ export default function App() {
       {/* Smartphone Viewport Container (Edge-to-edge on phones, sleek frame on desktop) */}
       <div className="relative w-full h-[100dvh] max-h-[100dvh] sm:max-w-[412px] sm:h-[96dvh] sm:max-h-[844px] bg-slate-50 overflow-hidden sm:rounded-[40px] shadow-[0_20px_60px_-15px_rgba(30,64,175,0.25)] sm:border-[7px] sm:border-slate-800/15 flex flex-col justify-between transition-all">
         
-        {/* Ambient Room Wallpaper Background (Sesuai Referensi Gambar) */}
+        {/* Ambient Room / City Wallpaper Background (Wallpaper Bersih Tanpa Maskot) */}
         <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
           <img
-            src={bgConfig.imageUrl || "/src/assets/images/jakarta_monas_bg_1792081781159.jpg"}
-            alt="Interior Background"
+            src={bgConfig.imageUrl && !bgConfig.imageUrl.includes('sae_home_wallpaper') ? bgConfig.imageUrl : "/src/assets/images/user_monas_sunset_bg.jpg"}
+            alt="SAE Wallpaper Background"
             referrerPolicy="no-referrer"
             style={{
-              opacity: (bgConfig.opacity ?? 60) / 100,
+              opacity: typeof bgConfig.opacity === 'number' ? Math.max(0.1, bgConfig.opacity / 100) : 1,
               filter: `blur(${bgConfig.blur ?? 0}px)`,
-              transform: `scale(${(bgConfig.scale ?? 102) / 100})`
+              transform: `scale(${Math.max(100, bgConfig.scale ?? 100) / 100})`
             }}
-            className="w-full h-full object-cover object-[72%_center] sm:object-center transition-all duration-700"
+            className="w-full h-full object-cover object-center transition-all duration-700"
           />
 
-          {/* Soft multi-layered gradient meshes for readability */}
-          <div className="absolute inset-0 bg-gradient-to-b from-sky-50/20 via-transparent to-slate-900/10" />
+          {/* Soft multi-layered gradient meshes for readability on left hero text */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/25 via-transparent to-transparent pointer-events-none" />
         </div>
 
         {/* Top Header with integrated PWA Install button & Notifications */}
@@ -252,6 +252,8 @@ export default function App() {
             <HomeOneScreenView
               onStartAnalysis={() => setScannerOpen(true)}
               onOpenInspiration={() => setInspirationOpen(true)}
+              onOpenTips={() => setTipsOpen(true)}
+              onOpenStyleTrend={() => setMoodOpen(true)}
             />
           )}
 

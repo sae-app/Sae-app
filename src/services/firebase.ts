@@ -637,10 +637,10 @@ export interface BackgroundConfig {
 }
 
 export const DEFAULT_BACKGROUND_CONFIG: BackgroundConfig = {
-  imageUrl: '/src/assets/images/jakarta_monas_bg_1792081781159.jpg',
-  opacity: 55,
+  imageUrl: '/src/assets/images/user_monas_sunset_bg.jpg',
+  opacity: 100,
   blur: 0,
-  scale: 102,
+  scale: 100,
   updatedAt: new Date().toISOString(),
   updatedBy: 'system'
 };
@@ -654,7 +654,12 @@ export function subscribeBackgroundConfig(
   try {
     const cached = localStorage.getItem('sae_bg_config');
     if (cached) {
-      onUpdate({ ...DEFAULT_BACKGROUND_CONFIG, ...JSON.parse(cached) });
+      const parsed = JSON.parse(cached);
+      if (parsed.imageUrl && parsed.imageUrl.includes('sae_home_wallpaper')) {
+        parsed.imageUrl = '/src/assets/images/user_monas_sunset_bg.jpg';
+        localStorage.setItem('sae_bg_config', JSON.stringify(parsed));
+      }
+      onUpdate({ ...DEFAULT_BACKGROUND_CONFIG, ...parsed });
     }
   } catch {
     // ignore
@@ -667,6 +672,9 @@ export function subscribeBackgroundConfig(
     (snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.data() as BackgroundConfig;
+        if (data.imageUrl && data.imageUrl.includes('sae_home_wallpaper')) {
+          data.imageUrl = '/src/assets/images/user_monas_sunset_bg.jpg';
+        }
         const merged = { ...DEFAULT_BACKGROUND_CONFIG, ...data };
         localStorage.setItem('sae_bg_config', JSON.stringify(merged));
         onUpdate(merged);
@@ -679,7 +687,11 @@ export function subscribeBackgroundConfig(
       try {
         const cached = localStorage.getItem('sae_bg_config');
         if (cached) {
-          onUpdate({ ...DEFAULT_BACKGROUND_CONFIG, ...JSON.parse(cached) });
+          const parsed = JSON.parse(cached);
+          if (parsed.imageUrl && parsed.imageUrl.includes('sae_home_wallpaper')) {
+            parsed.imageUrl = '/src/assets/images/user_monas_sunset_bg.jpg';
+          }
+          onUpdate({ ...DEFAULT_BACKGROUND_CONFIG, ...parsed });
         }
       } catch {
         onUpdate(DEFAULT_BACKGROUND_CONFIG);
