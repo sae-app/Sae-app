@@ -65,21 +65,18 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <>
       <header className="flex items-center justify-between px-4 pt-3.5 pb-1 z-20 shrink-0 select-none">
-        {/* Pojok kiri atas: Tulisan SAE bersih tanpa logo ekstra */}
+        {/* Pojok kiri atas: Tulisan SAE hitam berkelas (tanpa slogan, ketuk 3x untuk akses admin rahasia) */}
         <div 
           onClick={handleBrandSecretTap}
           className="cursor-pointer active:scale-95 transition-all select-none flex flex-col py-0.5"
           title="SAE (Ketuk 3x untuk Akses Admin)"
         >
-          <span className="font-serif text-[34px] sm:text-[38px] font-black tracking-tight text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.6)] leading-none select-none">
+          <span className="font-serif text-[34px] sm:text-[38px] font-black tracking-tight text-slate-900 drop-shadow-[0_1px_8px_rgba(255,255,255,0.55)] leading-none select-none">
             SAE
-          </span>
-          <span className="font-sans text-[7.5px] sm:text-[8px] font-extrabold tracking-[0.25em] text-white/95 uppercase mt-1 drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)]">
-            LOOK GOOD • FEEL BETTER
           </span>
         </div>
 
-        {/* Action Controls: Notification Bell & Settings/Sliders button */}
+        {/* Action Controls: Lonceng Notifikasi & PWA Install Kapsul */}
         <div className="flex items-center gap-2">
           {/* Kapsul [ 📲 Install App | ✕ ] */}
           {!isInstalled && !isDismissed && (
@@ -105,26 +102,16 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
           )}
 
-          {/* Lonceng Notifikasi Bulat Transparan Kaca */}
+          {/* Lonceng Notifikasi Bulat Transparan Kaca Kristal */}
           <button
             onClick={onOpenNotifications}
             aria-label="Notifikasi"
-            className="relative w-9 h-9 rounded-full bg-white/25 hover:bg-white/35 text-white flex items-center justify-center shadow-md transition-all active:scale-95 border border-white/40 backdrop-blur-md cursor-pointer"
+            className="relative w-9 h-9 rounded-full bg-white/20 hover:bg-white/35 active:bg-white/40 text-white flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.15)] transition-all active:scale-95 border border-white/40 backdrop-blur-md cursor-pointer"
           >
             <Bell className="w-4 h-4 text-white drop-shadow-xs" strokeWidth={2.2} />
             {unreadCount > 0 && (
               <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-white animate-pulse" />
             )}
-          </button>
-
-          {/* Tombol Pengaturan / Admin (Sesuai Referensi Gambar) */}
-          <button
-            onClick={onOpenAdmin}
-            aria-label="Pengaturan Admin"
-            title="Pengaturan Admin SAE"
-            className="w-9 h-9 rounded-full bg-white/25 hover:bg-white/35 text-white flex items-center justify-center shadow-md transition-all active:scale-95 border border-white/40 backdrop-blur-md cursor-pointer"
-          >
-            <Smartphone className="w-4 h-4 text-white drop-shadow-xs" strokeWidth={2.2} />
           </button>
         </div>
       </header>

@@ -5,13 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Header } from './components/Header';
-import { HeroBanner } from './components/HeroBanner';
-import { HomeGreetingHero } from './components/HomeGreetingHero';
-import { TornPaperBanner } from './components/TornPaperBanner';
-import { LayeredTornPaperCollage } from './components/LayeredTornPaperCollage';
 import { HomeOneScreenView } from './components/HomeOneScreenView';
-import { FeatureGrid } from './components/FeatureGrid';
-import { MascotQuoteCard } from './components/MascotQuoteCard';
 import { BottomNavBar, NavTab } from './components/BottomNavBar';
 import { ResultsView } from './components/ResultsView';
 import { DiscoverView } from './components/DiscoverView';
@@ -190,23 +184,6 @@ export default function App() {
       window.removeEventListener('hashchange', handleHashChange);
     };
   }, []);
-
-  const handleSelectFeature = (feature: 'check' | 'inspiration' | 'tips' | 'mood') => {
-    switch (feature) {
-      case 'check':
-        setScannerOpen(true);
-        break;
-      case 'inspiration':
-        setInspirationOpen(true);
-        break;
-      case 'tips':
-        setTipsOpen(true);
-        break;
-      case 'mood':
-        setMoodOpen(true);
-        break;
-    }
-  };
 
   const handleNavTabChange = (tab: NavTab) => {
     if (tab === 'profile') {

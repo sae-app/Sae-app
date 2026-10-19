@@ -56,9 +56,6 @@ import {
 import { 
   loginWithGoogle, 
   logoutAdmin, 
-  saveMascotConfig, 
-  subscribeMascotConfig, 
-  MascotConfig, 
   DEFAULT_MASCOT_CONFIG,
   BannerItem,
   DEFAULT_BANNERS,
@@ -77,7 +74,6 @@ import {
   StoreItem,
   subscribeEtalaseConfig,
   saveEtalaseConfig,
-  MascotQuoteShape,
   subscribePaperBannerConfig,
   savePaperBannerConfig,
   PaperBannerConfig,
@@ -85,8 +81,6 @@ import {
 } from '../../services/firebase';
 import { compressImageToDataUrl } from '../../utils/imageCompressor';
 import { SystemHealthSuite } from './SystemHealthSuite';
-import { MascotFullScreenEditor } from './MascotFullScreenEditor';
-import { MascotSpeechBubble } from '../MascotSpeechBubble';
 import { PaperBannerOrnament } from '../PaperBannerOrnament';
 
 interface AdminPortalProps {
@@ -96,7 +90,6 @@ interface AdminPortalProps {
 
 type AdminTab = 
   | 'dashboard' 
-  | 'mascot'
   | 'discover' 
   | 'tips' 
   | 'media' 
@@ -139,35 +132,10 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ isOpen, onClose }) => 
   const [loginError, setLoginError] = useState<string | null>(null);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
-  // Mascot editing state
-  const [previewImage, setPreviewImage] = useState<string>(DEFAULT_MASCOT_CONFIG.imageUrl || '/src/assets/images/sae_chibi_girl_cutout.png');
-  const [customSize, setCustomSize] = useState<number>(170);
-  const [mascotOffsetX, setMascotOffsetX] = useState<number>(0);
-  const [mascotOffsetY, setMascotOffsetY] = useState<number>(0);
-  const [quoteText, setQuoteText] = useState<string>(DEFAULT_MASCOT_CONFIG.companionQuote || '');
-  const [quoteAuthor, setQuoteAuthor] = useState<string>(DEFAULT_MASCOT_CONFIG.companionAuthor || '');
-  const [showQuote, setShowQuote] = useState<boolean>(true);
-  const [quoteShape, setQuoteShape] = useState<MascotQuoteShape>('watercolor_bubble');
-  const [quotePosition, setQuotePosition] = useState<'beside' | 'above'>('beside');
-  const [quoteOffsetX, setQuoteOffsetX] = useState<number>(0);
-  const [quoteOffsetY, setQuoteOffsetY] = useState<number>(0);
-  const [quoteScale, setQuoteScale] = useState<number>(100);
-  const [quoteCustomImageUrl, setQuoteCustomImageUrl] = useState<string>('');
-  const [quoteShowText, setQuoteShowText] = useState<boolean>(true);
-  const [isCompressingQuoteImg, setIsCompressingQuoteImg] = useState<boolean>(false);
-  const [avatarStyle, setAvatarStyle] = useState<'cutout' | 'circle' | 'rounded'>('cutout');
-  const [paperRecommendation, setPaperRecommendation] = useState<string>(DEFAULT_MASCOT_CONFIG.paperRecommendation || 'Hari ini cocok untuk warna-warna earth tone yang bikin kamu terlihat lebih fresh.');
-  const [hasUnsavedMascot, setHasUnsavedMascot] = useState<boolean>(false);
-  const [isDraggingMascot, setIsDraggingMascot] = useState(false);
-  const [isDraggingQuote, setIsDraggingQuote] = useState(false);
-  const [isDraggingBanner, setIsDraggingBanner] = useState(false);
-  const dragStartRef = useRef<{ clientX: number; clientY: number; startOffsetX: number; startOffsetY: number } | null>(null);
-  const [showGuideLines, setShowGuideLines] = useState(true);
-  const [fullScreenEditorOpen, setFullScreenEditorOpen] = useState(false);
-
   // Spanduk Sobekan Kertas (Layer 2) editing state
   const [paperBannerConfig, setPaperBannerConfig] = useState<PaperBannerConfig>(DEFAULT_PAPER_BANNER_CONFIG);
   const [isCompressingPaperBanner, setIsCompressingPaperBanner] = useState<boolean>(false);
+  const [isDraggingBanner, setIsDraggingBanner] = useState(false);
   const paperBannerFileInputRef = useRef<HTMLInputElement>(null);
 
   // 5 Banners editing state
@@ -209,26 +177,6 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ isOpen, onClose }) => 
       setAdminIdentifier(savedSession);
     }
 
-    // Subscribe to mascot config
-    const unsubMascot = subscribeMascotConfig((config) => {
-      setPreviewImage(config.imageUrl || '/src/assets/images/sae_chibi_girl_cutout.png');
-      setCustomSize(config.customSize || 170);
-      setMascotOffsetX(typeof config.offsetX === 'number' ? config.offsetX : 0);
-      setMascotOffsetY(typeof config.offsetY === 'number' ? config.offsetY : 0);
-      setQuoteText(config.companionQuote || DEFAULT_MASCOT_CONFIG.companionQuote || '');
-      setQuoteAuthor(config.companionAuthor || DEFAULT_MASCOT_CONFIG.companionAuthor || '');
-      setShowQuote(config.showQuote !== undefined ? config.showQuote : true);
-      setQuoteShape(config.quoteShape || 'watercolor_bubble');
-      setQuotePosition(config.quotePosition || 'beside');
-      setQuoteOffsetX(typeof config.quoteOffsetX === 'number' ? config.quoteOffsetX : 0);
-      setQuoteOffsetY(typeof config.quoteOffsetY === 'number' ? config.quoteOffsetY : 0);
-      setQuoteScale(typeof config.quoteScale === 'number' ? config.quoteScale : 100);
-      setQuoteCustomImageUrl(config.quoteCustomImageUrl || '');
-      setQuoteShowText(config.quoteShowText !== false);
-      setAvatarStyle(config.avatarStyle || 'cutout');
-      if (config.paperRecommendation) setPaperRecommendation(config.paperRecommendation);
-    });
-
     // Subscribe to 5 banners config
     const unsubBanners = subscribeBannersConfig((updatedBanners) => {
       if (Array.isArray(updatedBanners) && updatedBanners.length > 0) {
@@ -258,7 +206,6 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ isOpen, onClose }) => 
     });
 
     return () => {
-      unsubMascot();
       unsubBanners();
       unsubBg();
       unsubEtalase();
@@ -321,218 +268,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ isOpen, onClose }) => 
     setPasswordInput('');
   };
 
-  // Handle Mascot File Change
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
 
-    if (!file.type.startsWith('image/')) {
-      alert('Harap pilih file gambar (PNG, JPG, atau WebP)');
-      return;
-    }
-
-    setIsCompressing(true);
-    setSaveError(null);
-
-    try {
-      const compressedDataUrl = await compressImageToDataUrl(file, {
-        maxWidth: 600,
-        maxHeight: 600,
-        maxSizeBytes: 400 * 1024,
-        quality: 0.88
-      });
-      setPreviewImage(compressedDataUrl);
-      
-      // Auto-save instantly so user sees immediate results on the website without confusion
-      await saveMascotConfig(
-        {
-          imageUrl: compressedDataUrl,
-          customSize,
-          offsetX: mascotOffsetX,
-          offsetY: mascotOffsetY,
-          companionQuote: quoteText,
-          companionAuthor: quoteAuthor,
-          showQuote,
-          avatarStyle
-        },
-        adminIdentifier || 'detreaienam@gmail.com'
-      );
-      setHasUnsavedMascot(false);
-      setSaveSuccess(true);
-      setTimeout(() => setSaveSuccess(false), 3000);
-    } catch (err: unknown) {
-      console.error('Compression or save error:', err);
-      const reader = new FileReader();
-      reader.onload = async () => {
-        if (typeof reader.result === 'string') {
-          const rawUrl = reader.result;
-          setPreviewImage(rawUrl);
-          try {
-            await saveMascotConfig(
-              {
-                imageUrl: rawUrl,
-                customSize,
-                offsetX: mascotOffsetX,
-                offsetY: mascotOffsetY,
-                companionQuote: quoteText,
-                companionAuthor: quoteAuthor,
-                showQuote,
-                avatarStyle
-              },
-              adminIdentifier || 'detreaienam@gmail.com'
-            );
-            setHasUnsavedMascot(false);
-            setSaveSuccess(true);
-            setTimeout(() => setSaveSuccess(false), 3000);
-          } catch {
-            setHasUnsavedMascot(true);
-          }
-        }
-      };
-      reader.readAsDataURL(file);
-    } finally {
-      setIsCompressing(false);
-      if (e.target) {
-        e.target.value = '';
-      }
-    }
-  };
-
-  // Real-time zero-latency mascot state updater
-  const updateMascotState = (updater: {
-    offsetX?: number;
-    offsetY?: number;
-    customSize?: number;
-    imageUrl?: string;
-    showQuote?: boolean;
-    companionQuote?: string;
-    quoteShape?: MascotQuoteShape;
-    quotePosition?: 'beside' | 'above';
-    quoteOffsetX?: number;
-    quoteOffsetY?: number;
-    quoteScale?: number;
-    quoteCustomImageUrl?: string;
-    quoteShowText?: boolean;
-    paperRecommendation?: string;
-  }) => {
-    const newX = updater.offsetX !== undefined ? updater.offsetX : mascotOffsetX;
-    const newY = updater.offsetY !== undefined ? updater.offsetY : mascotOffsetY;
-    const newSize = updater.customSize !== undefined ? updater.customSize : customSize;
-    const newImg = updater.imageUrl !== undefined ? updater.imageUrl : previewImage;
-    const newShowQuote = updater.showQuote !== undefined ? updater.showQuote : showQuote;
-    const newQuote = updater.companionQuote !== undefined ? updater.companionQuote : quoteText;
-    const newShape = updater.quoteShape !== undefined ? updater.quoteShape : quoteShape;
-    const newPos = updater.quotePosition !== undefined ? updater.quotePosition : quotePosition;
-    const newQuoteOffsetX = updater.quoteOffsetX !== undefined ? updater.quoteOffsetX : quoteOffsetX;
-    const newQuoteOffsetY = updater.quoteOffsetY !== undefined ? updater.quoteOffsetY : quoteOffsetY;
-    const newQuoteScale = updater.quoteScale !== undefined ? updater.quoteScale : quoteScale;
-    const newQuoteCustomImg = updater.quoteCustomImageUrl !== undefined ? updater.quoteCustomImageUrl : quoteCustomImageUrl;
-    const newQuoteShowText = updater.quoteShowText !== undefined ? updater.quoteShowText : quoteShowText;
-    const newPaperRec = updater.paperRecommendation !== undefined ? updater.paperRecommendation : paperRecommendation;
-
-    if (updater.offsetX !== undefined) setMascotOffsetX(updater.offsetX);
-    if (updater.offsetY !== undefined) setMascotOffsetY(updater.offsetY);
-    if (updater.customSize !== undefined) setCustomSize(updater.customSize);
-    if (updater.imageUrl !== undefined) setPreviewImage(updater.imageUrl);
-    if (updater.showQuote !== undefined) setShowQuote(updater.showQuote);
-    if (updater.companionQuote !== undefined) setQuoteText(updater.companionQuote);
-    if (updater.quoteShape !== undefined) setQuoteShape(updater.quoteShape);
-    if (updater.quotePosition !== undefined) setQuotePosition(updater.quotePosition);
-    if (updater.quoteOffsetX !== undefined) setQuoteOffsetX(updater.quoteOffsetX);
-    if (updater.quoteOffsetY !== undefined) setQuoteOffsetY(updater.quoteOffsetY);
-    if (updater.quoteScale !== undefined) setQuoteScale(updater.quoteScale);
-    if (updater.quoteCustomImageUrl !== undefined) setQuoteCustomImageUrl(updater.quoteCustomImageUrl);
-    if (updater.quoteShowText !== undefined) setQuoteShowText(updater.quoteShowText);
-    if (updater.paperRecommendation !== undefined) setPaperRecommendation(updater.paperRecommendation);
-    setHasUnsavedMascot(true);
-
-    // Instant local synchronization to Home screen
-    try {
-      const configToBroadcast: MascotConfig = {
-        imageUrl: newImg,
-        customSize: newSize,
-        offsetX: newX,
-        offsetY: newY,
-        companionQuote: newQuote,
-        companionAuthor: quoteAuthor,
-        showQuote: newShowQuote,
-        quoteShape: newShape,
-        quotePosition: newPos,
-        quoteOffsetX: newQuoteOffsetX,
-        quoteOffsetY: newQuoteOffsetY,
-        quoteScale: newQuoteScale,
-        quoteCustomImageUrl: newQuoteCustomImg,
-        quoteShowText: newQuoteShowText,
-        avatarStyle: avatarStyle,
-        paperRecommendation: newPaperRec,
-        updatedAt: new Date().toISOString(),
-      };
-      localStorage.setItem('sae_mascot_config', JSON.stringify(configToBroadcast));
-      if (typeof window !== 'undefined') {
-        queueMicrotask(() => {
-          window.dispatchEvent(new CustomEvent('sae_mascot_updated', { detail: configToBroadcast }));
-        });
-      }
-    } catch {
-      // ignore
-    }
-  };
-
-  // Interactive Mascot Dragging inside Mobile Simulator with window listener
-  const handlePointerDownMascot = (e: React.PointerEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDraggingMascot(true);
-    const startX = e.clientX;
-    const startY = e.clientY;
-    const initialOffsetX = mascotOffsetX;
-    const initialOffsetY = mascotOffsetY;
-
-    const onPointerMove = (moveEvt: PointerEvent) => {
-      const deltaX = Math.round(moveEvt.clientX - startX);
-      const deltaY = Math.round(moveEvt.clientY - startY);
-      const nextX = Math.max(-230, Math.min(100, initialOffsetX + deltaX));
-      const nextY = Math.max(-140, Math.min(60, initialOffsetY + deltaY));
-      updateMascotState({ offsetX: nextX, offsetY: nextY });
-    };
-
-    const onPointerUp = () => {
-      setIsDraggingMascot(false);
-      window.removeEventListener('pointermove', onPointerMove);
-      window.removeEventListener('pointerup', onPointerUp);
-    };
-
-    window.addEventListener('pointermove', onPointerMove);
-    window.addEventListener('pointerup', onPointerUp);
-  };
-
-  // Interactive Speech Bubble Dragging inside Mobile Simulator
-  const handlePointerDownQuote = (e: React.PointerEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDraggingQuote(true);
-    const startX = e.clientX;
-    const startY = e.clientY;
-    const initialOffsetX = quoteOffsetX;
-    const initialOffsetY = quoteOffsetY;
-
-    const onPointerMove = (moveEvt: PointerEvent) => {
-      const deltaX = Math.round(moveEvt.clientX - startX);
-      const deltaY = Math.round(moveEvt.clientY - startY);
-      const nextX = Math.max(-200, Math.min(200, initialOffsetX + deltaX));
-      const nextY = Math.max(-200, Math.min(200, initialOffsetY + deltaY));
-      updateMascotState({ quoteOffsetX: nextX, quoteOffsetY: nextY });
-    };
-
-    const onPointerUp = () => {
-      setIsDraggingQuote(false);
-      window.removeEventListener('pointermove', onPointerMove);
-      window.removeEventListener('pointerup', onPointerUp);
-    };
-
-    window.addEventListener('pointermove', onPointerMove);
-    window.addEventListener('pointerup', onPointerUp);
-  };
 
   // Interactive Paper Banner Dragging inside Mobile Simulator
   const handlePointerDownBanner = (e: React.PointerEvent) => {
@@ -633,54 +369,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ isOpen, onClose }) => 
     }
   };
 
-  // Reset Mascot to Default
-  const handleResetToDefault = () => {
-    setPreviewImage('/src/assets/images/sae_chibi_girl_cutout.png');
-    setCustomSize(170);
-    setMascotOffsetX(0);
-    setMascotOffsetY(0);
-    setAvatarStyle('cutout');
-    setQuoteText(DEFAULT_MASCOT_CONFIG.companionQuote || '');
-    setQuoteAuthor(DEFAULT_MASCOT_CONFIG.companionAuthor || '');
-    setShowQuote(true);
-    setQuoteShape('watercolor_bubble');
-    setQuotePosition('beside');
-    setQuoteOffsetX(0);
-    setQuoteOffsetY(0);
-    setQuoteScale(100);
-    setQuoteCustomImageUrl('');
-    setQuoteShowText(true);
-    setSaveError(null);
-    setHasUnsavedMascot(true);
-  };
 
-  // Handle Mascot Quote Custom Image Upload & Compression
-  const handleQuoteImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setIsCompressingQuoteImg(true);
-    setSaveError(null);
-
-    try {
-      const compressedDataUrl = await compressImageToDataUrl(file, {
-        maxWidth: 600,
-        maxHeight: 400,
-        maxSizeBytes: 200 * 1024,
-        quality: 0.88
-      });
-
-      updateMascotState({
-        quoteCustomImageUrl: compressedDataUrl,
-        quoteShape: 'custom_image'
-      });
-    } catch (err) {
-      console.error('Quote image compression failed:', err);
-    } finally {
-      setIsCompressingQuoteImg(false);
-      if (e.target) e.target.value = '';
-    }
-  };
 
   // Handle Banner Image File Change
   const handleBannerFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -917,48 +606,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ isOpen, onClose }) => 
     try {
       const adminName = adminIdentifier || 'detreaienam@gmail.com';
 
-      if (activeTab === 'mascot') {
-        let finalImageUrl = previewImage;
-
-        if (finalImageUrl.startsWith('data:image/') && finalImageUrl.length > 500000) {
-          try {
-            const res = await fetch(finalImageUrl);
-            const blob = await res.blob();
-            finalImageUrl = await compressImageToDataUrl(blob, {
-              maxWidth: 500,
-              maxHeight: 500,
-              maxSizeBytes: 350 * 1024,
-              quality: 0.82
-            });
-            setPreviewImage(finalImageUrl);
-          } catch (compressionErr) {
-            console.warn('Re-compression failed:', compressionErr);
-          }
-        }
-
-        await saveMascotConfig(
-          {
-            imageUrl: finalImageUrl,
-            customSize,
-            offsetX: mascotOffsetX,
-            offsetY: mascotOffsetY,
-            companionQuote: quoteText,
-            companionAuthor: quoteAuthor,
-            showQuote,
-            quoteShape,
-            quotePosition,
-            quoteOffsetX,
-            quoteOffsetY,
-            quoteScale,
-            quoteCustomImageUrl,
-            quoteShowText,
-            avatarStyle,
-            paperRecommendation
-          },
-          adminName
-        );
-        setHasUnsavedMascot(false);
-      } else if (activeTab === 'media') {
+      if (activeTab === 'media') {
         await saveBackgroundConfig(bgConfig, adminName);
       } else if (activeTab === 'discover') {
         await saveEtalaseConfig(etalaseConfig, adminName);
@@ -1446,22 +1094,22 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ isOpen, onClose }) => 
                   {/* Row 2: 4 Top Stat Cards (2x2 on Mobile, 4 in row on Desktop) */}
                   <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
                     
-                    {/* Stat 1: Maskot & Spanduk Home */}
+                    {/* Stat 1: Status Sistem & Diagnostik */}
                     <div 
-                      onClick={() => setActiveTab('mascot')}
+                      onClick={() => setActiveTab('system_health')}
                       className="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between"
                     >
                       <div className="flex items-start justify-between mb-2">
                         <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
-                          <User className="w-4 h-4 sm:w-5 sm:h-5" />
+                          <ShieldCheck className="w-4 h-4 sm:w-5 sm:h-5" />
                         </div>
                         <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform" />
                       </div>
                       <div>
-                        <span className="text-[11px] sm:text-xs font-semibold text-slate-500">Maskot & Spanduk</span>
+                        <span className="text-[11px] sm:text-xs font-semibold text-slate-500">Status Sistem</span>
                         <div className="flex items-baseline gap-1.5 mt-0.5">
-                          <span className="text-xl sm:text-2xl font-black text-slate-900">Terkunci</span>
-                          <span className="text-[10px] sm:text-xs text-emerald-600 font-bold">✓ Referensi</span>
+                          <span className="text-xl sm:text-2xl font-black text-slate-900">Normal</span>
+                          <span className="text-[10px] sm:text-xs text-emerald-600 font-bold">✓ Terhubung</span>
                         </div>
                       </div>
                     </div>
@@ -1534,15 +1182,15 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ isOpen, onClose }) => 
 
 
                       <button
-                        onClick={() => setActiveTab('mascot')}
-                        className="p-3 rounded-xl border border-slate-200/80 hover:border-emerald-400 hover:bg-emerald-50/60 transition-all text-left flex items-center gap-2.5 cursor-pointer group"
+                        onClick={() => setActiveTab('system_health')}
+                        className="p-3 rounded-xl border border-slate-200/80 hover:border-blue-400 hover:bg-blue-50/60 transition-all text-left flex items-center gap-2.5 cursor-pointer group"
                       >
-                        <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
-                          <User className="w-4 h-4" />
+                        <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                          <ShieldCheck className="w-4 h-4" />
                         </div>
                         <div>
-                          <p className="text-xs font-bold text-slate-800 leading-tight">Maskot</p>
-                          <p className="text-[10px] text-slate-400">Posisi & Skala</p>
+                          <p className="text-xs font-bold text-slate-800 leading-tight">Diagnostik</p>
+                          <p className="text-[10px] text-slate-400">Kesehatan Sistem</p>
                         </div>
                       </button>
 
@@ -1755,520 +1403,6 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ isOpen, onClose }) => 
                     </div>
 
                   </div>
-                </div>
-              )}
-
-              {/* ================= VIEW: MASKOT FLEKSIBEL (TERKUNCI SESUAI GAMBAR REFERENSI) ================= */}
-              {activeTab === 'mascot' && (
-                <div className="space-y-4 animate-in fade-in duration-200">
-                  
-                  {/* Top Bar Action */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl bg-white border border-slate-200/90 shadow-2xs">
-                    <div>
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <h2 className="text-sm sm:text-base font-bold text-slate-900">Kelola Maskot SAE</h2>
-                        <span className="px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800 text-[10px] font-extrabold border border-blue-200">
-                          🔒 Balon & Spanduk Terkunci Sesuai Referensi
-                        </span>
-                      </div>
-                      <p className="text-[11px] text-slate-500 mt-0.5">
-                        {hasUnsavedMascot ? (
-                          <span className="text-blue-600 font-bold flex items-center gap-1">
-                            ⚡ Perubahan aktif di preview! Klik &quot;Simpan ke Website&quot; untuk menyimpan ke Cloud.
-                          </span>
-                        ) : (
-                          'Sesuaikan karakter maskot, ukuran, teks sapaan suara, dan teks rekomendasi harian pada spanduk.'
-                        )}
-                      </p>
-                    </div>
-
-                    <div className="flex items-center gap-2 shrink-0">
-                      <button
-                        type="button"
-                        onClick={handleResetToDefault}
-                        className="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-all cursor-pointer"
-                        title="Kembalikan semua ke setelan awal referensi"
-                      >
-                        Reset Default
-                      </button>
-                      <button
-                        onClick={handleSaveToCloud}
-                        disabled={isSaving}
-                        className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-white font-bold text-xs transition-all cursor-pointer disabled:opacity-50 ${
-                          hasUnsavedMascot
-                            ? 'bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-500/30 ring-2 ring-blue-400 ring-offset-2 animate-pulse'
-                            : 'bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-500/20'
-                        }`}
-                      >
-                        {isSaving ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
-                        <span>{isSaving ? 'Menyimpan...' : hasUnsavedMascot ? '✓ Simpan ke Website!' : '✓ Simpan Cloud'}</span>
-                      </button>
-                    </div>
-                  </div>
-
-                  {saveSuccess && (
-                    <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                      <span>Perubahan Maskot & Teks Rekomendasi berhasil disimpan ke Cloud dan live untuk semua pengunjung!</span>
-                    </div>
-                  )}
-
-                  {saveError && (
-                    <div className="p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold flex items-center gap-2">
-                      <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
-                      <span>{saveError}</span>
-                    </div>
-                  )}
-
-                  {/* 2-Column Responsive Layout: Left = Sticky Simulator HP, Right = Controls */}
-                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-
-                    {/* ======================================================== */}
-                    {/* KOLOM KIRI (STICKY): SIMULATOR PREVIEW HP 1:1 REALISTIK  */}
-                    {/* ======================================================== */}
-                    <div className="lg:col-span-5 lg:sticky lg:top-4 space-y-3">
-                      
-                      {/* Box Simulator HP */}
-                      <div className="p-3.5 sm:p-4 rounded-3xl bg-slate-950 border border-slate-800 shadow-xl space-y-2.5">
-                        <div className="flex items-center justify-between text-white text-[11px] px-1">
-                          <div className="flex items-center gap-1.5 text-blue-400 font-bold">
-                            <Smartphone className="w-4 h-4 text-blue-400" />
-                            <span>Preview Live Layar Home (100% Sesuai HP)</span>
-                          </div>
-                          <span className="text-[9.5px] text-emerald-400 font-semibold flex items-center gap-1">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-                            Real-time
-                          </span>
-                        </div>
-
-                        {/* Mobile Phone Frame */}
-                        <div 
-                          className="relative mx-auto w-full max-w-[320px] h-[480px] rounded-[32px] overflow-hidden border-4 border-slate-700/80 shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex flex-col justify-between select-none bg-slate-900"
-                        >
-                          {/* Wallpaper Background Dinamis */}
-                          <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-                            <img
-                              src={bgConfig.imageUrl || "/src/assets/images/sae_home_wallpaper.jpg"}
-                              alt="Wallpaper Background"
-                              style={{
-                                opacity: typeof bgConfig.opacity === 'number' ? Math.max(0.1, bgConfig.opacity / 100) : 1,
-                                filter: `blur(${bgConfig.blur ?? 0}px)`
-                              }}
-                              className="w-full h-full object-cover scale-105"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-r from-black/25 via-transparent to-transparent pointer-events-none" />
-                          </div>
-
-                          {/* Top Punch Hole & SAE Brand */}
-                          <div className="relative z-10 flex items-center justify-between px-3.5 pt-2.5 pb-1 pointer-events-none">
-                            <div className="flex flex-col">
-                              <span className="font-serif text-[18px] font-black text-white tracking-tight leading-none drop-shadow-md">SAE</span>
-                              <span className="text-[5.5px] font-bold tracking-[0.2em] text-white/90 uppercase mt-0.5">LOOK GOOD • FEEL BETTER</span>
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <span className="w-5 h-5 rounded-full bg-white/30 backdrop-blur-xs flex items-center justify-center text-[8px] text-white shadow-xs">🔔</span>
-                              <span className="w-5 h-5 rounded-full bg-white/30 backdrop-blur-xs flex items-center justify-center text-[8px] text-white shadow-xs">⚙️</span>
-                            </div>
-                          </div>
-
-                          {/* Editorial Greeting Hero ("Hai, kamu! ♡") */}
-                          <div className="relative z-10 px-3.5 pt-6 pb-1 pointer-events-none flex flex-col items-start max-w-[170px]">
-                            <span className="font-serif italic text-[18px] text-white drop-shadow-md leading-tight">Hai,</span>
-                            <h3 className="font-serif text-[20px] font-black text-white leading-none drop-shadow-md flex items-center gap-1">
-                              <span>kamu!</span>
-                              <span className="text-[14px]">♡</span>
-                            </h3>
-                            <p className="text-[8px] text-white/90 leading-tight mt-1 drop-shadow-xs">
-                              Temukan outfit terbaikmu dengan analisis AI yang mudah dan cepat.
-                            </p>
-                            <div className="w-8 h-[1px] bg-white/70 rounded-full my-1.5" />
-                            <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-blue-600 text-white text-[8px] font-extrabold shadow-sm">
-                              <span>Mulai Analisis</span>
-                              <span className="text-[7px]">→</span>
-                            </div>
-
-                            {/* 3 Menu Cepat Mini */}
-                            <div className="flex flex-col gap-1 mt-2.5 w-full">
-                              <div className="px-2 py-1 rounded-lg bg-black/30 backdrop-blur-xs text-[7.5px] font-bold text-white flex items-center justify-between border border-white/20">
-                                <span>💡 Tips Harian</span>
-                                <span>›</span>
-                              </div>
-                              <div className="px-2 py-1 rounded-lg bg-black/30 backdrop-blur-xs text-[7.5px] font-bold text-white flex items-center justify-between border border-white/20">
-                                <span>👗 Inspirasi Outfit</span>
-                                <span>›</span>
-                              </div>
-                              <div className="px-2 py-1 rounded-lg bg-black/30 backdrop-blur-xs text-[7.5px] font-bold text-white flex items-center justify-between border border-white/20">
-                                <span>⭐ Tren Style</span>
-                                <span>›</span>
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Live Simulator Mascot (Jika latar belakang bukan wallpaper menyatu dengan karakter) */}
-                          {!bgConfig.imageUrl?.includes('sae_home_wallpaper') && (
-                            <div 
-                              className="absolute right-2 bottom-12 z-20 flex flex-col items-center pointer-events-none"
-                              style={{
-                                transform: `translate(${Math.round(mascotOffsetX * 0.7)}px, ${Math.round(mascotOffsetY * 0.7)}px)`
-                              }}
-                            >
-                              <div className="w-16 h-2 rounded-full bg-black/40 blur-[3px]" />
-                              <img
-                                src={previewImage || '/src/assets/images/sae_original_girl_actual.png'}
-                                alt="Maskot Preview"
-                                style={{
-                                  height: `${Math.round((customSize || 230) * 0.6)}px`
-                                }}
-                                className="object-contain filter drop-shadow-md"
-                              />
-                            </div>
-                          )}
-
-                          {/* Bottom Dock Bar */}
-                          <div className="relative z-10 mx-2.5 mb-2.5 h-8 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-around px-3 border border-white/70 shadow-sm pointer-events-none">
-                            <span className="text-[8px] font-bold text-blue-600">Home</span>
-                            <span className="text-[8px] text-slate-500">Toko</span>
-                            <div className="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-[8px] font-bold shadow-xs">●</div>
-                            <span className="text-[8px] text-slate-500">Hasil</span>
-                            <span className="text-[8px] text-slate-500">Profil</span>
-                          </div>
-
-                        </div>
-
-                      </div>
-
-                    </div>
-
-                    {/* ======================================================== */}
-                    {/* KOLOM KANAN: PILIHAN MASKOT, UKURAN, & POSISI           */}
-                    {/* ======================================================== */}
-                    <div className="lg:col-span-7 space-y-4">
-                      
-                      {/* CARD 1: Pilihan Karakter & Upload Maskot Bebas */}
-                      <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-2xs space-y-3.5">
-                        <div className="flex items-center justify-between gap-2 pb-2.5 border-b border-slate-100">
-                          <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-sm shrink-0">
-                              <User className="w-4 h-4" />
-                            </div>
-                            <div>
-                              <h3 className="text-xs sm:text-sm font-bold text-slate-900 flex items-center gap-1.5">
-                                <span>Pilihan Karakter & Maskot SAE</span>
-                              </h3>
-                              <p className="text-[10.5px] text-slate-500">Pilih karakter bawaan atau unggah foto maskot Anda sendiri.</p>
-                            </div>
-                          </div>
-
-                          <button
-                            type="button"
-                            onClick={() => fileInputRef.current?.click()}
-                            disabled={isCompressing}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold cursor-pointer transition-all shadow-xs shrink-0"
-                          >
-                            <Upload className="w-3.5 h-3.5" />
-                            <span>{isCompressing ? 'Mengompres...' : 'Unggah Maskot Sendiri'}</span>
-                          </button>
-                        </div>
-
-                        {/* Hidden file input */}
-                        <input
-                          type="file"
-                          ref={fileInputRef}
-                          onChange={handleFileChange}
-                          accept="image/png,image/jpeg,image/webp"
-                          className="hidden"
-                        />
-
-                        {/* Grid Pilihan Karakter Cepat */}
-                        <div className="space-y-1.5">
-                          <label className="text-[11px] font-bold text-slate-700 block">Karakter Tersedia (Klik untuk Memilih):</label>
-                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                            {[
-                              {
-                                id: 'original_girl',
-                                name: 'Karakter Asli SAE',
-                                tag: 'Nana Kin Resmi',
-                                url: '/src/assets/images/sae_original_girl_actual.png'
-                              },
-                              {
-                                id: 'chibi_cutout',
-                                name: 'Chibi SAE Cute',
-                                tag: 'Gaya Imut Sticker',
-                                url: '/src/assets/images/sae_chibi_girl_cutout.png'
-                              },
-                              {
-                                id: 'chibi_tshirt',
-                                name: 'Chibi T-Shirt',
-                                tag: 'Casual Streetwear',
-                                url: '/src/assets/images/sae_chibi_girl_tshirt.png'
-                              },
-                              {
-                                id: 'sae_mascot',
-                                name: 'Maskot Original',
-                                tag: 'Logo Klasik SAE',
-                                url: '/src/assets/images/sae_mascot.png'
-                              },
-                              {
-                                id: 'girl_real',
-                                name: 'Karakter Real Look',
-                                tag: 'Model Estetik',
-                                url: '/src/assets/images/sae_girl_real.png'
-                              }
-                            ].map((char) => {
-                              const isSelected = previewImage === char.url;
-                              return (
-                                <button
-                                  key={char.id}
-                                  type="button"
-                                  onClick={() => updateMascotState({ imageUrl: char.url })}
-                                  className={`p-2 rounded-xl border text-left flex items-center gap-2 cursor-pointer transition-all ${
-                                    isSelected
-                                      ? 'bg-blue-50/80 border-blue-500 shadow-xs ring-1 ring-blue-500/30'
-                                      : 'bg-slate-50 hover:bg-slate-100 border-slate-200'
-                                  }`}
-                                >
-                                  <div className="w-10 h-10 rounded-lg bg-white border border-slate-200 flex items-center justify-center overflow-hidden shrink-0 p-0.5">
-                                    <img src={char.url} alt={char.name} className="w-full h-full object-contain" />
-                                  </div>
-                                  <div className="overflow-hidden">
-                                    <span className="block font-bold text-[11px] text-slate-800 truncate leading-tight">{char.name}</span>
-                                    <span className={`text-[9px] font-medium truncate block ${isSelected ? 'text-blue-600 font-bold' : 'text-slate-400'}`}>
-                                      {char.tag}
-                                    </span>
-                                  </div>
-                                </button>
-                              );
-                            })}
-                          </div>
-                        </div>
-
-                        {/* Indikator Karakter Terpilih */}
-                        <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs">
-                          <div className="flex items-center gap-2 truncate">
-                            <span className="text-[10.5px] text-slate-500">Maskot Aktif:</span>
-                            <span className="font-bold text-slate-800 text-[11px] truncate">
-                              {previewImage.startsWith('data:') ? 'Foto Kustom Unggahan Pengguna' : previewImage.split('/').pop()}
-                            </span>
-                          </div>
-                          <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 shrink-0">
-                            Aktif
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* CARD 2: Ukuran & Posisi Maskot (D-Pad & Slider) */}
-                      <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-2xs space-y-3.5">
-                        <div className="flex items-center justify-between gap-2 pb-2 border-b border-slate-100">
-                          <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-sm shrink-0">
-                              <Sliders className="w-4 h-4" />
-                            </div>
-                            <div>
-                              <h3 className="text-xs sm:text-sm font-bold text-slate-900">Ukuran & Posisi Maskot di Layar</h3>
-                              <p className="text-[10.5px] text-slate-500">Sesuaikan proporsi dan titik letak maskot.</p>
-                            </div>
-                          </div>
-
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setCustomSize(230);
-                              setMascotOffsetX(0);
-                              setMascotOffsetY(0);
-                              updateMascotState({ customSize: 230, offsetX: 0, offsetY: 0 });
-                            }}
-                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 text-[10.5px] font-bold cursor-pointer transition-colors"
-                            title="Kembalikan ukuran dan posisi ke ideal"
-                          >
-                            <RotateCcw className="w-3 h-3" />
-                            <span>Reset Posisi</span>
-                          </button>
-                        </div>
-
-                        {/* Slider Ukuran */}
-                        <div className="space-y-1.5 p-3 rounded-xl bg-slate-50 border border-slate-200">
-                          <div className="flex items-center justify-between text-xs">
-                            <span className="font-bold text-slate-700">Tinggi Maskot</span>
-                            <span className="font-bold text-blue-600">{customSize} px</span>
-                          </div>
-                          <input
-                            type="range"
-                            min="120"
-                            max="320"
-                            step="5"
-                            value={customSize}
-                            onChange={(e) => updateMascotState({ customSize: Number(e.target.value) })}
-                            className="w-full accent-blue-600 cursor-pointer h-2"
-                          />
-                          <div className="flex justify-between items-center pt-1 text-[10px]">
-                            <button
-                              type="button"
-                              onClick={() => updateMascotState({ customSize: 160 })}
-                              className="px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-600 hover:text-blue-600"
-                            >
-                              Kecil (160px)
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => updateMascotState({ customSize: 230 })}
-                              className="px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-600 hover:text-blue-600 font-bold"
-                            >
-                              Standar (230px)
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => updateMascotState({ customSize: 280 })}
-                              className="px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-600 hover:text-blue-600"
-                            >
-                              Besar (280px)
-                            </button>
-                          </div>
-                        </div>
-
-                        {/* D-Pad Tombol Arah */}
-                        <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3">
-                          <div>
-                            <span className="font-bold text-xs text-slate-800 block">Geser Titik Posisi Maskot (D-Pad)</span>
-                            <span className="text-[10px] text-slate-500">
-                              Koordinat saat ini: X: {mascotOffsetX}px, Y: {mascotOffsetY}px
-                            </span>
-                          </div>
-
-                          <div className="flex flex-col items-center gap-1 select-none">
-                            {/* Tombol Atas */}
-                            <button
-                              type="button"
-                              onClick={() => updateMascotState({ offsetY: Math.max(-120, mascotOffsetY - 10) })}
-                              className="w-8 h-8 rounded-lg bg-white hover:bg-blue-50 active:bg-blue-100 border border-slate-300 text-slate-700 flex items-center justify-center cursor-pointer shadow-2xs font-bold"
-                              title="Geser ke Atas"
-                            >
-                              <ArrowUp className="w-3.5 h-3.5" />
-                            </button>
-
-                            {/* Tombol Kiri, Tengah Reset, Kanan */}
-                            <div className="flex items-center gap-1">
-                              <button
-                                type="button"
-                                onClick={() => updateMascotState({ offsetX: Math.max(-150, mascotOffsetX - 10) })}
-                                className="w-8 h-8 rounded-lg bg-white hover:bg-blue-50 active:bg-blue-100 border border-slate-300 text-slate-700 flex items-center justify-center cursor-pointer shadow-2xs font-bold"
-                                title="Geser ke Kiri"
-                              >
-                                <ArrowLeft className="w-3.5 h-3.5" />
-                              </button>
-                              
-                              <button
-                                type="button"
-                                onClick={() => updateMascotState({ offsetX: 0, offsetY: 0 })}
-                                className="w-8 h-8 rounded-lg bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 text-[10px] font-extrabold flex items-center justify-center cursor-pointer"
-                                title="Kembali ke Tengah"
-                              >
-                                0
-                              </button>
-
-                              <button
-                                type="button"
-                                onClick={() => updateMascotState({ offsetX: Math.min(100, mascotOffsetX + 10) })}
-                                className="w-8 h-8 rounded-lg bg-white hover:bg-blue-50 active:bg-blue-100 border border-slate-300 text-slate-700 flex items-center justify-center cursor-pointer shadow-2xs font-bold"
-                                title="Geser ke Kanan"
-                              >
-                                <ArrowRight className="w-3.5 h-3.5" />
-                              </button>
-                            </div>
-
-                            {/* Tombol Bawah */}
-                            <button
-                              type="button"
-                              onClick={() => updateMascotState({ offsetY: Math.min(80, mascotOffsetY + 10) })}
-                              className="w-8 h-8 rounded-lg bg-white hover:bg-blue-50 active:bg-blue-100 border border-slate-300 text-slate-700 flex items-center justify-center cursor-pointer shadow-2xs font-bold"
-                              title="Geser ke Bawah"
-                            >
-                              <ArrowDown className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
-                        </div>
-
-                      </div>
-
-                      {/* CARD 2: Suara & Sapaan Maskot (TTS Audio) */}
-                      <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-2xs space-y-3">
-                        <div className="flex items-center justify-between gap-2 pb-2 border-b border-slate-100">
-                          <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center font-bold text-sm shrink-0">
-                              🔊
-                            </div>
-                            <div>
-                              <h3 className="text-xs sm:text-sm font-extrabold text-slate-900 flex items-center gap-2">
-                                <span>Suara & Sapaan Karakter (TTS Audio)</span>
-                              </h3>
-                              <p className="text-[10.5px] text-slate-500">
-                                Kalimat yang diucapkan oleh karakter SAE saat diketuk oleh pengunjung di layar Home.
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="space-y-3">
-                          <div className="flex items-center justify-between">
-                            <label className="block text-xs font-bold text-slate-800">
-                              Kalimat Sapaan Karakter
-                            </label>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                try {
-                                  if ('speechSynthesis' in window) {
-                                    window.speechSynthesis.cancel();
-                                    const utterance = new SpeechSynthesisUtterance(
-                                      (quoteText || 'Hai! Aku SAE, senang bertemu denganmu! ♡').replace(/[♡✨📸◡̈🌸]/g, '')
-                                    );
-                                    utterance.lang = 'id-ID';
-                                    utterance.rate = 1.05;
-                                    window.speechSynthesis.speak(utterance);
-                                  }
-                                } catch {
-                                  // ignore
-                                }
-                              }}
-                              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-bold shadow-xs transition-colors cursor-pointer"
-                              title="Klik untuk mendengar suara maskot membaca kalimat ini"
-                            >
-                              <span>🔊 Uji Coba Suara (TTS)</span>
-                            </button>
-                          </div>
-
-                          <textarea
-                            rows={2}
-                            value={quoteText}
-                            onChange={(e) => updateMascotState({ companionQuote: e.target.value })}
-                            placeholder="Ketik kalimat sapaan, contoh: Hai! Aku SAE, senang bertemu denganmu! ♡"
-                            className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-blue-500 font-medium"
-                          />
-
-                          <div className="flex items-center gap-1.5 flex-wrap pt-0.5">
-                            <span className="text-[10px] text-slate-400 font-bold">Preset cepat:</span>
-                            {[
-                              'Hai! Aku SAE, senang bertemu denganmu! ♡',
-                              'Outfit kamu kece banget hari ini! ✨',
-                              'Yuk mulai analisis gaya kamu sekarang! 📸',
-                              'Senyum dulu yuk, auto makin memesona! ◡̈'
-                            ].map((preset) => (
-                              <button
-                                key={preset}
-                                type="button"
-                                onClick={() => updateMascotState({ companionQuote: preset })}
-                                className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 text-[10px] font-semibold cursor-pointer transition-colors border border-slate-200"
-                              >
-                                {preset}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-
-                    </div>
-
-                  </div>
-
                 </div>
               )}
 
@@ -3005,19 +2139,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ isOpen, onClose }) => 
                 <SystemHealthSuite
                   banners={banners}
                   etalaseConfig={etalaseConfig}
-                  mascotConfig={{
-                    imageUrl: previewImage,
-                    customSize,
-                    offsetX: mascotOffsetX,
-                    offsetY: mascotOffsetY,
-                    companionQuote: quoteText,
-                    companionAuthor: quoteAuthor,
-                    showQuote,
-                    quoteShape,
-                    quotePosition,
-                    avatarStyle,
-                    updatedAt: new Date().toISOString()
-                  }}
+                  mascotConfig={DEFAULT_MASCOT_CONFIG}
                   bgConfig={bgConfig}
                   adminEmail={adminIdentifier}
                 />
@@ -3037,8 +2159,6 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ isOpen, onClose }) => 
                 <span>Dashboard</span>
               </button>
 
-
-
               <button
                 onClick={() => setActiveTab('discover')}
                 className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded-xl text-[10px] font-bold transition-all ${
@@ -3047,16 +2167,6 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ isOpen, onClose }) => 
               >
                 <Store className="w-4 h-4" />
                 <span>Etalase</span>
-              </button>
-
-              <button
-                onClick={() => setActiveTab('mascot')}
-                className={`flex flex-col items-center gap-0.5 py-1 px-2 rounded-xl text-[10px] font-bold transition-all ${
-                  activeTab === 'mascot' ? 'text-blue-600' : 'text-slate-500'
-                }`}
-              >
-                <User className="w-4 h-4" />
-                <span>Maskot</span>
               </button>
 
               <button

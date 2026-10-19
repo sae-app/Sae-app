@@ -59,7 +59,7 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
         className="relative w-full flex items-center justify-between h-[52px] sm:h-[55px] rounded-[30px] bg-gradient-to-b from-white/95 via-white/85 to-white/90 backdrop-blur-2xl border border-white shadow-[0_10px_28px_-6px_rgba(37,99,235,0.18),0_2px_10px_rgba(0,0,0,0.03)] px-2"
       >
         {/* Subtle Sculpted Top Highlight Reflection */}
-        <div className="absolute inset-x-4 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-blue-300/60 to-transparent pointer-events-none" />
+        <div className="absolute inset-x-4 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-sky-300/50 to-transparent pointer-events-none" />
 
         {/* 1. HOME TAB */}
         <button
@@ -86,7 +86,7 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
             Home
           </span>
           {activeTab === 'home' && (
-            <span className="w-3.5 h-[2px] bg-blue-600 rounded-full mt-0.5 shadow-2xs" />
+            <span className="w-3.5 h-[2px] bg-blue-500 rounded-full mt-0.5 shadow-2xs" />
           )}
         </button>
 
@@ -116,7 +116,7 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
             Toko
           </span>
           {activeTab === 'discover' && (
-            <span className="w-3.5 h-[2px] bg-blue-600 rounded-full mt-0.5 shadow-2xs" />
+            <span className="w-3.5 h-[2px] bg-blue-500 rounded-full mt-0.5 shadow-2xs" />
           )}
         </button>
 
@@ -124,15 +124,15 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
         <div className="relative flex flex-col items-center justify-center flex-1 -mt-4.5 z-40">
           <div className="relative group flex flex-col items-center">
             {/* Ultra-Thin Delicate Breathing Glow Ring */}
-            <div className="absolute w-12 h-12 rounded-full bg-gradient-to-r from-cyan-400/50 via-blue-500/50 to-sky-400/50 blur-[6px] animate-breathing-halo pointer-events-none" />
-            <div className="absolute -inset-0.5 rounded-full border border-cyan-300/40 animate-breathing-halo pointer-events-none" />
+            <div className="absolute w-12 h-12 rounded-full bg-gradient-to-r from-sky-400/50 via-blue-500/50 to-cyan-400/50 blur-[6px] animate-breathing-halo pointer-events-none" />
+            <div className="absolute -inset-0.5 rounded-full border border-sky-300/40 animate-breathing-halo pointer-events-none" />
 
             {/* Main Round Floating Scan Button */}
             <button
               onClick={onOpenScan}
               aria-label="Scan Outfit Sekarang"
               title="Scan Outfit dengan SAE AI"
-              className="relative w-12 h-12 rounded-full bg-gradient-to-tr from-blue-600 via-blue-500 to-cyan-400 text-white flex items-center justify-center border-2 border-white shadow-[0_6px_18px_-2px_rgba(37,99,235,0.45)] cursor-pointer overflow-hidden animate-breathing-orb transition-transform duration-300 active:scale-95 hover:brightness-105"
+              className="relative w-12 h-12 rounded-full bg-gradient-to-tr from-blue-600 via-sky-500 to-cyan-400 text-white flex items-center justify-center border-2 border-white shadow-[0_6px_20px_-2px_rgba(37,99,235,0.45)] cursor-pointer overflow-hidden animate-breathing-orb transition-transform duration-300 active:scale-95 hover:brightness-105"
             >
               {/* Subtle top inner reflection */}
               <div className="absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/35 to-transparent pointer-events-none rounded-t-full" />
@@ -171,7 +171,7 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
             My Results
           </span>
           {activeTab === 'results' && (
-            <span className="w-3.5 h-[2px] bg-blue-600 rounded-full mt-0.5 shadow-2xs" />
+            <span className="w-3.5 h-[2px] bg-blue-500 rounded-full mt-0.5 shadow-2xs" />
           )}
         </button>
 
@@ -200,7 +200,7 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
             Profile
           </span>
           {activeTab === 'profile' && (
-            <span className="w-3.5 h-[2px] bg-blue-600 rounded-full mt-0.5 shadow-2xs" />
+            <span className="w-3.5 h-[2px] bg-blue-500 rounded-full mt-0.5 shadow-2xs" />
           )}
         </button>
       </nav>
