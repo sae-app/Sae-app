@@ -96,6 +96,7 @@ interface AdminPortalProps {
 
 type AdminTab = 
   | 'dashboard' 
+  | 'mascot'
   | 'discover' 
   | 'tips' 
   | 'media' 
