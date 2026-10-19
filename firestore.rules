@@ -1,0 +1,72 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global Default-deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == 'triaide02@gmail.com' ||
+        request.auth.token.email == 'detreaienam@gmail.com' ||
+        (request.auth.token.email_verified == true && exists(/databases/$(database)/documents/admins/$(request.auth.uid)))
+      );
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isValidMascotSettings(data) {
+      return data.keys().hasAll(['customSize', 'updatedAt']) &&
+             data.customSize is number && data.customSize >= 40 && data.customSize <= 450 &&
+             data.updatedAt is string;
+    }
+
+    match /settings/mascot {
+      allow read: if true;
+      allow create, update: if isAdmin() || isValidMascotSettings(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    match /settings/banners {
+      allow read: if true;
+      allow create, update: if isAdmin() || request.resource.data.keys().hasAll(['banners', 'updatedAt']);
+      allow delete: if isAdmin();
+    }
+
+    match /settings/background {
+      allow read: if true;
+      allow create, update: if isAdmin() || request.resource.data.keys().hasAll(['opacity', 'updatedAt']);
+      allow delete: if isAdmin();
+    }
+
+    match /settings/etalase {
+      allow read: if true;
+      allow create, update: if isAdmin() || request.resource.data.keys().hasAll(['categories', 'updatedAt']);
+      allow delete: if isAdmin();
+    }
+
+    match /settings/paper_banner {
+      allow read: if true;
+      allow create, update: if isAdmin() || request.resource.data.keys().hasAll(['enabled', 'scale', 'rotate']);
+      allow delete: if isAdmin();
+    }
+
+    match /analytics/{docId} {
+      allow read: if true;
+      allow create, update: if true;
+      allow delete: if isAdmin();
+    }
+
+    match /admins/{adminId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin() && isValidId(adminId);
+    }
+  }
+}

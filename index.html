@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      // Vite HMR is disabled in AI Studio container iframe environment.
+      // Safely mock vite-hmr WebSocket so @vite/client doesn't throw unhandled connection errors.
+      (function() {
+        const OriginalWebSocket = window.WebSocket;
+        if (OriginalWebSocket) {
+          window.WebSocket = function(url, protocols) {
+            if (protocols === 'vite-hmr' || (Array.isArray(protocols) && protocols.includes('vite-hmr'))) {
+              const target = new EventTarget();
+              const mockWs = {
+                readyState: 1, // OPEN
+                OPEN: 1,
+                CONNECTING: 0,
+                CLOSING: 2,
+                CLOSED: 3,
+                url: String(url),
+                protocol: 'vite-hmr',
+                send() {},
+                close() {
+                  this.readyState = 3;
+                  target.dispatchEvent(new Event('close'));
+                },
+                addEventListener(type, listener, options) {
+                  target.addEventListener(type, listener, options);
+                },
+                removeEventListener(type, listener, options) {
+                  target.removeEventListener(type, listener, options);
+                },
+                dispatchEvent(event) {
+                  return target.dispatchEvent(event);
+                }
+              };
+              setTimeout(() => {
+                target.dispatchEvent(new Event('open'));
+              }, 0);
+              return mockWs;
+            }
+            return new OriginalWebSocket(url, protocols);
+          };
+          window.WebSocket.prototype = OriginalWebSocket.prototype;
+          window.WebSocket.OPEN = 1;
+          window.WebSocket.CONNECTING = 0;
+          window.WebSocket.CLOSING = 2;
+          window.WebSocket.CLOSED = 3;
+        }
+
+        // Global fallback to ignore WebSocket closed without opened errors
+        window.addEventListener('unhandledrejection', function(event) {
+          if (event.reason && (
+            (typeof event.reason.message === 'string' && event.reason.message.includes('WebSocket')) ||
+            (typeof event.reason === 'string' && event.reason.includes('WebSocket'))
+          )) {
+            event.preventDefault();
+          }
+        });
+      })();
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>SAE - See Your Better Style</title>
+    <meta name="description" content="Temukan gaya dan outfit terbaikmu setiap hari dengan penilaian gaya cerdas, tips berpakaian, inspirasi, dan mood booster." />
+    <meta property="og:title" content="SAE - See Your Better Style" />
+    <meta property="og:description" content="Temukan gaya dan outfit terbaikmu setiap hari dengan penilaian gaya cerdas, tips berpakaian, inspirasi, dan mood booster." />
+    <meta property="og:type" content="website" />
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#2563eb" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="SAE" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  </head>
+  <body class="bg-slate-100 text-slate-800 antialiased selection:bg-blue-200">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

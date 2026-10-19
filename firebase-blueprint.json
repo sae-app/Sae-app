@@ -1,0 +1,138 @@
+{
+  "entities": {
+    "MascotSettings": {
+      "title": "MascotSettings",
+      "description": "Configuration for the SAE brand mascot widget displayed on the homepage",
+      "type": "object",
+      "properties": {
+        "imageUrl": {
+          "type": "string",
+          "description": "Image URL or data URI of the mascot image",
+          "maxLength": 900000
+        },
+        "customSize": {
+          "type": "number",
+          "description": "Size height in pixels for the mascot graphic (between 80 and 320)"
+        },
+        "companionQuote": {
+          "type": "string",
+          "description": "Companion inspirational quote text",
+          "maxLength": 300
+        },
+        "companionAuthor": {
+          "type": "string",
+          "description": "Author or title of the companion quote",
+          "maxLength": 100
+        },
+        "showQuote": {
+          "type": "boolean",
+          "description": "Toggle visibility of quote bubble"
+        },
+        "avatarStyle": {
+          "type": "string",
+          "description": "Visual framing mode: cutout, circle, or rounded"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "ISO timestamp string when setting was last modified"
+        },
+        "updatedBy": {
+          "type": "string",
+          "description": "Identifier or email of the admin who updated the setting",
+          "maxLength": 128
+        }
+      },
+      "required": ["customSize", "updatedAt"]
+    },
+    "AdminProfile": {
+      "title": "AdminProfile",
+      "description": "Admin identity and role authorization record",
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "description": "Admin email address",
+          "maxLength": 128
+        },
+        "role": {
+          "type": "string",
+          "description": "Role string (e.g. admin or superadmin)",
+          "enum": ["admin", "superadmin"]
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Display name of the admin",
+          "maxLength": 100
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "ISO timestamp string"
+        }
+      },
+      "required": ["email", "role"]
+    },
+    "PaperBannerSettings": {
+      "title": "PaperBannerSettings",
+      "description": "Configuration for the Layer 2 torn paper banner on the homepage",
+      "type": "object",
+      "properties": {
+        "imageUrl": {
+          "type": "string",
+          "description": "Custom image URL or data URI",
+          "maxLength": 900000
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether banner is active"
+        },
+        "offsetX": {
+          "type": "number",
+          "description": "Horizontal offset in pixels"
+        },
+        "offsetY": {
+          "type": "number",
+          "description": "Vertical offset in pixels"
+        },
+        "scale": {
+          "type": "number",
+          "description": "Scale percentage"
+        },
+        "rotate": {
+          "type": "number",
+          "description": "Rotation angle in degrees"
+        },
+        "opacity": {
+          "type": "number",
+          "description": "Opacity percentage"
+        },
+        "title": {
+          "type": "string",
+          "description": "Optional title text"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp"
+        },
+        "updatedBy": {
+          "type": "string",
+          "description": "Admin identifier"
+        }
+      },
+      "required": ["enabled", "scale", "rotate"]
+    }
+  },
+  "firestore": {
+    "/settings/mascot": {
+      "schema": "MascotSettings",
+      "description": "Singleton configuration document for the homepage mascot card"
+    },
+    "/settings/paper_banner": {
+      "schema": "PaperBannerSettings",
+      "description": "Singleton configuration document for the homepage Layer 2 torn paper banner"
+    },
+    "/admins/{adminId}": {
+      "schema": "AdminProfile",
+      "description": "Registered admin users allowed to manage SAE settings"
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "Remix SAE - See Your Better Style",
+  "description": "Temukan gaya dan outfit terbaikmu setiap hari dengan penilaian gaya cerdas, tips berpakaian, inspirasi, dan mood booster.",
+  "requestFramePermissions": [
+    "CAMERA"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
