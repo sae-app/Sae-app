@@ -65,13 +65,13 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <>
       <header className="flex items-center justify-between px-4 pt-3.5 pb-1 z-20 shrink-0 select-none">
-        {/* Pojok kiri atas: Tulisan SAE hitam berkelas (tanpa slogan, ketuk 3x untuk akses admin rahasia) */}
+        {/* Pojok kiri atas: Tulisan SAE putih elegan & lebih besar (ketuk 3x untuk akses admin rahasia) */}
         <div 
           onClick={handleBrandSecretTap}
           className="cursor-pointer active:scale-95 transition-all select-none flex flex-col py-0.5"
           title="SAE (Ketuk 3x untuk Akses Admin)"
         >
-          <span className="font-serif text-[34px] sm:text-[38px] font-black tracking-tight text-slate-900 drop-shadow-[0_1px_8px_rgba(255,255,255,0.55)] leading-none select-none">
+          <span className="font-serif text-[42px] sm:text-[48px] font-black tracking-tight text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.65)] leading-none select-none">
             SAE
           </span>
         </div>

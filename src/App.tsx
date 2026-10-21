@@ -216,12 +216,14 @@ export default function App() {
           <div className="absolute inset-0 bg-gradient-to-r from-black/25 via-transparent to-transparent pointer-events-none" />
         </div>
 
-        {/* Top Header with integrated PWA Install button & Notifications */}
-        <Header
-          onOpenNotifications={() => setNotificationsOpen(true)}
-          onOpenAdmin={() => setAdminOpen(true)}
-          unreadCount={2}
-        />
+        {/* Top Header with integrated PWA Install button & Notifications (Disembunyikan di menu Toko dan My Results sesuai permintaan) */}
+        {activeTab !== 'discover' && activeTab !== 'results' && (
+          <Header
+            onOpenNotifications={() => setNotificationsOpen(true)}
+            onOpenAdmin={() => setAdminOpen(true)}
+            unreadCount={2}
+          />
+        )}
 
         {/* Center Screen Content (1-Screen Pure Viewport Sesuai Desain Referensi) */}
         <main className={`relative z-10 flex-1 min-h-0 flex flex-col justify-between ${activeTab === 'home' ? 'overflow-visible' : 'overflow-hidden'}`}>
@@ -294,7 +296,7 @@ export default function App() {
           isOpen={wallpaperOpen}
           onClose={() => setWallpaperOpen(false)}
           currentConfig={bgConfig}
-          onApplyConfig={(newCfg) => setBgConfig(newCfg)}
+          onApplyConfig={(newCfg: BackgroundConfig) => setBgConfig(newCfg)}
         />
         <AdminPortal
           isOpen={adminOpen}

@@ -77,7 +77,12 @@ import {
   subscribePaperBannerConfig,
   savePaperBannerConfig,
   PaperBannerConfig,
-  DEFAULT_PAPER_BANNER_CONFIG
+  DEFAULT_PAPER_BANNER_CONFIG,
+  PolaroidConfig,
+  DEFAULT_POLAROID_CONFIG,
+  PolaroidFrameType,
+  subscribePolaroidConfig,
+  savePolaroidConfig
 } from '../../services/firebase';
 import { compressImageToDataUrl } from '../../utils/imageCompressor';
 import { SystemHealthSuite } from './SystemHealthSuite';
@@ -158,6 +163,12 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ isOpen, onClose }) => 
   const [newCatName, setNewCatName] = useState('');
   const [newCatIcon, setNewCatIcon] = useState('🛍️');
 
+  // Polaroid Frame (My Results) editing state
+  const [polaroidConfig, setPolaroidConfig] = useState<PolaroidConfig>(DEFAULT_POLAROID_CONFIG);
+  const [isCompressingPolaroid, setIsCompressingPolaroid] = useState<boolean>(false);
+  const [polaroidSaveSuccess, setPolaroidSaveSuccess] = useState<boolean>(false);
+  const polaroidFileInputRef = useRef<HTMLInputElement>(null);
+
   // Status feedback
   const [isCompressing, setIsCompressing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -205,11 +216,17 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ isOpen, onClose }) => 
       setPaperBannerConfig(cfg);
     });
 
+    // Subscribe to Polaroid Frame settings
+    const unsubPolaroid = subscribePolaroidConfig((cfg) => {
+      setPolaroidConfig(cfg);
+    });
+
     return () => {
       unsubBanners();
       unsubBg();
       unsubEtalase();
       unsubPaperBanner();
+      unsubPolaroid();
     };
   }, []);
 
@@ -1608,6 +1625,229 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ isOpen, onClose }) => 
                         <span>0px (Tajam)</span>
                         <span>2px (Standar)</span>
                         <span>8px (Sangat Buram)</span>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  {/* ================= PENGATURAN BINGKAI POLAROID (MY RESULTS) ================= */}
+                  <div className="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200/90 shadow-2xs space-y-4">
+                    <div className="flex items-center justify-between gap-2 pb-3 border-b border-slate-100 flex-wrap">
+                      <div>
+                        <h3 className="font-bold text-sm sm:text-base text-slate-900 flex items-center gap-1.5">
+                          <Palette className="w-4 h-4 text-blue-600" />
+                          <span>Pilihan Bingkai Polaroid (Halaman My Results)</span>
+                        </h3>
+                        <p className="text-[11px] text-slate-500 mt-0.5">
+                          Pilih 4 bingkai polaroid terbaik atau unggah bingkai kustom bebas dari galeri.
+                        </p>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          try {
+                            await savePolaroidConfig(polaroidConfig, adminIdentifier);
+                            setPolaroidSaveSuccess(true);
+                            setTimeout(() => setPolaroidSaveSuccess(false), 3000);
+                          } catch (e) {
+                            console.error('Failed to save polaroid frame', e);
+                          }
+                        }}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-xs cursor-pointer transition-all active:scale-95"
+                      >
+                        <Check className="w-3.5 h-3.5" />
+                        <span>Simpan Bingkai</span>
+                      </button>
+                    </div>
+
+                    {polaroidSaveSuccess && (
+                      <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center gap-2 animate-in fade-in">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                        <span>Bingkai polaroid berhasil disimpan & langsung aktif di halaman My Results!</span>
+                      </div>
+                    )}
+
+                    {/* 4 Pilihan Bingkai Polaroid Terbaik + Custom Upload */}
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-slate-700 block">
+                        4 Pilihan Bingkai Kurasi SAE:
+                      </label>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                        {/* 1. Classic White */}
+                        <button
+                          type="button"
+                          onClick={() => setPolaroidConfig(prev => ({ ...prev, activeFrame: 'classic_white' }))}
+                          className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between h-[105px] ${
+                            polaroidConfig.activeFrame === 'classic_white'
+                              ? 'border-blue-600 bg-blue-50/70 shadow-xs ring-2 ring-blue-500/20'
+                              : 'border-slate-200 hover:border-slate-300 bg-slate-50/60'
+                          }`}
+                        >
+                          <div className="w-full h-8 rounded-md bg-[#fdfbf7] border border-slate-300/80 shadow-2xs flex items-center justify-center">
+                            <span className="text-[9px] font-bold text-slate-700">Foto</span>
+                          </div>
+                          <div>
+                            <span className="font-extrabold text-xs text-slate-900 block leading-tight">Classic White</span>
+                            <span className="text-[9.5px] text-slate-500">Fujifilm Asli</span>
+                          </div>
+                        </button>
+
+                        {/* 2. Vintage Kraft */}
+                        <button
+                          type="button"
+                          onClick={() => setPolaroidConfig(prev => ({ ...prev, activeFrame: 'vintage_kraft' }))}
+                          className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between h-[105px] ${
+                            polaroidConfig.activeFrame === 'vintage_kraft'
+                              ? 'border-blue-600 bg-blue-50/70 shadow-xs ring-2 ring-blue-500/20'
+                              : 'border-slate-200 hover:border-slate-300 bg-slate-50/60'
+                          }`}
+                        >
+                          <div className="w-full h-8 rounded-md bg-[#ebdcc9] border border-[#c8b59e] shadow-2xs flex items-center justify-center">
+                            <span className="text-[9px] font-bold text-[#634832]">Foto</span>
+                          </div>
+                          <div>
+                            <span className="font-extrabold text-xs text-slate-900 block leading-tight">Vintage Kraft</span>
+                            <span className="text-[9.5px] text-amber-700 font-medium">Warm Retro Paper</span>
+                          </div>
+                        </button>
+
+                        {/* 3. Obsidian Dark */}
+                        <button
+                          type="button"
+                          onClick={() => setPolaroidConfig(prev => ({ ...prev, activeFrame: 'obsidian_dark' }))}
+                          className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between h-[105px] ${
+                            polaroidConfig.activeFrame === 'obsidian_dark'
+                              ? 'border-blue-600 bg-blue-50/70 shadow-xs ring-2 ring-blue-500/20'
+                              : 'border-slate-200 hover:border-slate-300 bg-slate-50/60'
+                          }`}
+                        >
+                          <div className="w-full h-8 rounded-md bg-[#1e1e24] border border-slate-600 shadow-2xs flex items-center justify-center">
+                            <span className="text-[9px] font-bold text-slate-300">Foto</span>
+                          </div>
+                          <div>
+                            <span className="font-extrabold text-xs text-slate-900 block leading-tight">Obsidian Dark</span>
+                            <span className="text-[9.5px] text-slate-500">Matte Studio Gallery</span>
+                          </div>
+                        </button>
+
+                        {/* 4. Pastel Iridescent */}
+                        <button
+                          type="button"
+                          onClick={() => setPolaroidConfig(prev => ({ ...prev, activeFrame: 'pastel_iridescent' }))}
+                          className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between h-[105px] ${
+                            polaroidConfig.activeFrame === 'pastel_iridescent'
+                              ? 'border-blue-600 bg-blue-50/70 shadow-xs ring-2 ring-blue-500/20'
+                              : 'border-slate-200 hover:border-slate-300 bg-slate-50/60'
+                          }`}
+                        >
+                          <div className="w-full h-8 rounded-md bg-gradient-to-r from-sky-100 via-pink-100 to-amber-100 border border-pink-200 shadow-2xs flex items-center justify-center">
+                            <span className="text-[9px] font-bold text-indigo-700">Foto</span>
+                          </div>
+                          <div>
+                            <span className="font-extrabold text-xs text-slate-900 block leading-tight">Pastel Aurora</span>
+                            <span className="text-[9.5px] text-pink-600 font-medium">Soft Iridescent</span>
+                          </div>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Tombol Unggah dari Galeri */}
+                    <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div>
+                        <div className="flex items-center gap-1.5 font-bold text-xs text-slate-900">
+                          <Upload className="w-3.5 h-3.5 text-blue-600" />
+                          <span>Unggah Bingkai Kustom dari Galeri</span>
+                        </div>
+                        <p className="text-[10.5px] text-slate-500 mt-0.5">
+                          {polaroidConfig.customFrameUrl 
+                            ? 'Bingkai kustom aktif digunakan saat opsi galeri dipilih.' 
+                            : 'Bosan dengan pilihan standar? Unggah tekstur/frame polaroid sendiri kapan saja.'}
+                        </p>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <input
+                          ref={polaroidFileInputRef}
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={async (e) => {
+                            const file = e.target.files?.[0];
+                            if (!file) return;
+                            setIsCompressingPolaroid(true);
+                            try {
+                              const compressed = await compressImageToDataUrl(file, {
+                                maxWidth: 1200,
+                                maxHeight: 1600,
+                                quality: 0.85
+                              });
+                              setPolaroidConfig(prev => ({
+                                ...prev,
+                                activeFrame: 'custom_uploaded',
+                                customFrameUrl: compressed
+                              }));
+                            } catch (err) {
+                              console.error('Failed to compress polaroid frame', err);
+                            } finally {
+                              setIsCompressingPolaroid(false);
+                            }
+                          }}
+                        />
+
+                        <button
+                          type="button"
+                          onClick={() => polaroidFileInputRef.current?.click()}
+                          disabled={isCompressingPolaroid}
+                          className="px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-xs transition-all shrink-0"
+                        >
+                          <Upload className="w-3.5 h-3.5 text-cyan-300" />
+                          <span>{isCompressingPolaroid ? 'Memproses...' : 'Unggah dari Galeri'}</span>
+                        </button>
+
+                        {polaroidConfig.customFrameUrl && (
+                          <button
+                            type="button"
+                            onClick={() => setPolaroidConfig(prev => ({ ...prev, activeFrame: 'custom_uploaded' }))}
+                            className={`px-3 py-1.5 rounded-xl text-xs font-bold border cursor-pointer transition-all ${
+                              polaroidConfig.activeFrame === 'custom_uploaded'
+                                ? 'bg-blue-600 text-white border-blue-600 shadow-2xs'
+                                : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'
+                            }`}
+                          >
+                            Pilih Kustom
+                          </button>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Pengaturan Watermark SAE */}
+                    <div className="pt-2 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div className="space-y-0.5">
+                        <span className="font-bold text-xs text-slate-800 block">Tulisan Watermark SAE di Foto</span>
+                        <p className="text-[10.5px] text-slate-500">
+                          Memastikan foto yang dibagikan memiliki identitas logo "SAE" kecil yang estetik.
+                        </p>
+                      </div>
+
+                      <div className="flex items-center gap-3">
+                        <input
+                          type="text"
+                          value={polaroidConfig.watermarkText}
+                          onChange={(e) => setPolaroidConfig(prev => ({ ...prev, watermarkText: e.target.value }))}
+                          placeholder="SAE"
+                          className="px-2.5 py-1 rounded-lg border border-slate-300 text-xs text-slate-800 font-bold w-24 text-center focus:ring-2 focus:ring-blue-500/20"
+                        />
+
+                        <label className="flex items-center gap-1.5 cursor-pointer text-xs font-bold text-slate-700">
+                          <input
+                            type="checkbox"
+                            checked={polaroidConfig.showWatermark}
+                            onChange={(e) => setPolaroidConfig(prev => ({ ...prev, showWatermark: e.target.checked }))}
+                            className="w-4 h-4 rounded text-blue-600 accent-blue-600 cursor-pointer"
+                          />
+                          <span>Aktifkan</span>
+                        </label>
                       </div>
                     </div>
 

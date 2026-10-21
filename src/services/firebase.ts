@@ -1249,4 +1249,101 @@ export async function saveEtalaseConfig(
   }
 }
 
+// ================= POLAROID FRAME SETTINGS (MY RESULTS) =================
+export type PolaroidFrameType = 
+  | 'classic_white'
+  | 'vintage_kraft'
+  | 'obsidian_dark'
+  | 'pastel_iridescent'
+  | 'custom_uploaded';
+
+export interface PolaroidConfig {
+  activeFrame: PolaroidFrameType;
+  customFrameUrl?: string; // Data URL / Image URL dari galeri admin
+  showWatermark: boolean; // Tampilkan logo tulisan SAE kecil
+  watermarkText: string; // "SAE" atau "SAE · See Your Better Style"
+  watermarkPosition: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+  updatedAt: string;
+  updatedBy?: string;
+}
+
+export const DEFAULT_POLAROID_CONFIG: PolaroidConfig = {
+  activeFrame: 'classic_white',
+  customFrameUrl: '',
+  showWatermark: true,
+  watermarkText: 'SAE',
+  watermarkPosition: 'bottom-right',
+  updatedAt: new Date().toISOString(),
+  updatedBy: 'system'
+};
+
+const POLAROID_SETTINGS_PATH = 'settings/polaroid';
+
+// Subscribe to Polaroid Frame Settings from Firestore
+export function subscribePolaroidConfig(
+  onUpdate: (config: PolaroidConfig) => void
+): Unsubscribe {
+  try {
+    const cached = localStorage.getItem('sae_polaroid_config');
+    if (cached) {
+      onUpdate({ ...DEFAULT_POLAROID_CONFIG, ...JSON.parse(cached) });
+    } else {
+      onUpdate(DEFAULT_POLAROID_CONFIG);
+    }
+  } catch {
+    onUpdate(DEFAULT_POLAROID_CONFIG);
+  }
+
+  const polaroidDocRef = doc(db, 'settings', 'polaroid');
+
+  return onSnapshot(
+    polaroidDocRef,
+    (snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.data() as Partial<PolaroidConfig>;
+        const merged: PolaroidConfig = { ...DEFAULT_POLAROID_CONFIG, ...data };
+        localStorage.setItem('sae_polaroid_config', JSON.stringify(merged));
+        onUpdate(merged);
+      } else {
+        onUpdate(DEFAULT_POLAROID_CONFIG);
+      }
+    },
+    (err) => {
+      console.warn('Polaroid config listener error:', err);
+      try {
+        const cached = localStorage.getItem('sae_polaroid_config');
+        if (cached) {
+          onUpdate({ ...DEFAULT_POLAROID_CONFIG, ...JSON.parse(cached) });
+        }
+      } catch {}
+    }
+  );
+}
+
+// Save Polaroid Frame Settings to Firestore
+export async function savePolaroidConfig(
+  config: Partial<PolaroidConfig>,
+  userIdentifier: string
+): Promise<void> {
+  const polaroidDocRef = doc(db, 'settings', 'polaroid');
+  const payload: PolaroidConfig = {
+    activeFrame: config.activeFrame || DEFAULT_POLAROID_CONFIG.activeFrame,
+    customFrameUrl: typeof config.customFrameUrl === 'string' ? config.customFrameUrl : (DEFAULT_POLAROID_CONFIG.customFrameUrl ?? ''),
+    showWatermark: config.showWatermark !== undefined ? config.showWatermark : DEFAULT_POLAROID_CONFIG.showWatermark,
+    watermarkText: config.watermarkText || DEFAULT_POLAROID_CONFIG.watermarkText,
+    watermarkPosition: config.watermarkPosition || DEFAULT_POLAROID_CONFIG.watermarkPosition,
+    updatedAt: new Date().toISOString(),
+    updatedBy: userIdentifier
+  };
+
+  try {
+    await setDoc(polaroidDocRef, payload, { merge: true });
+    localStorage.setItem('sae_polaroid_config', JSON.stringify(payload));
+  } catch (error) {
+    localStorage.setItem('sae_polaroid_config', JSON.stringify(payload));
+    handleFirestoreError(error, OperationType.WRITE, POLAROID_SETTINGS_PATH);
+  }
+}
+
 export { onAuthStateChanged };
+
