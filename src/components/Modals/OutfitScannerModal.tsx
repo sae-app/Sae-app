@@ -606,14 +606,14 @@ export const OutfitScannerModal: React.FC<OutfitScannerModalProps> = ({
               onClick={handleToggleTimer}
               className={`relative w-10 h-10 rounded-full flex items-center justify-center transition-all cursor-pointer backdrop-blur-md border ${
                 timerSeconds > 0
-                  ? 'bg-sky-500 text-white border-sky-300 shadow-[0_0_14px_rgba(14,165,233,0.7)] scale-105'
+                  ? 'bg-[#A69D8E] text-[#343640] border-[#E9E5D9] shadow-[0_0_14px_rgba(233,229,217,0.7)] scale-105'
                   : 'bg-white/15 text-white/90 border-white/15 hover:bg-white/25'
               }`}
               title={timerSeconds === 0 ? 'Atur Timer (3s / 5s)' : `Timer Aktif: ${timerSeconds} detik`}
             >
               <Timer className="w-4.5 h-4.5" />
               {timerSeconds > 0 && (
-                <span className="absolute -top-1 -right-1 text-[10px] font-black bg-white text-sky-600 rounded-full w-4 h-4 flex items-center justify-center shadow-xs">
+                <span className="absolute -top-1 -right-1 text-[10px] font-black bg-[#E9E5D9] text-[#343640] rounded-full w-4 h-4 flex items-center justify-center shadow-xs">
                   {timerSeconds}
                 </span>
               )}
@@ -648,7 +648,7 @@ export const OutfitScannerModal: React.FC<OutfitScannerModalProps> = ({
           {/* Camera Permission State: Requesting */}
           {cameraState === 'requesting' && (
             <div className="flex flex-col items-center justify-center text-center p-6 space-y-3 z-10 text-white">
-              <div className="w-12 h-12 rounded-full border-3 border-cyan-400 border-t-transparent animate-spin" />
+              <div className="w-12 h-12 rounded-full border-3 border-[#E9E5D9] border-t-transparent animate-spin" />
               <p className="text-sm font-medium text-slate-200">Menghubungkan ke cermin SAE...</p>
             </div>
           )}
@@ -657,7 +657,7 @@ export const OutfitScannerModal: React.FC<OutfitScannerModalProps> = ({
           {(cameraState === 'denied' || cameraState === 'error') && !capturedImage && (
             <div className="flex flex-col items-center justify-center text-center px-4 py-3 bg-black/70 backdrop-blur-xl rounded-2xl border border-white/15 z-10 text-white max-w-[280px] shadow-2xl animate-in fade-in zoom-in-95 duration-200 space-y-2.5">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center border border-cyan-400/30">
+                <div className="w-8 h-8 rounded-full bg-[#A69D8E]/30 text-[#E9E5D9] flex items-center justify-center border border-[#E9E5D9]/40">
                   <Camera className="w-4 h-4" />
                 </div>
                 <h4 className="font-bold text-xs text-white tracking-wide">Kamera Bawaan HP</h4>
@@ -667,7 +667,7 @@ export const OutfitScannerModal: React.FC<OutfitScannerModalProps> = ({
               <button
                 type="button"
                 onClick={() => nativeCameraInputRef.current?.click()}
-                className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white text-xs font-bold transition-all shadow-[0_0_15px_rgba(34,211,238,0.3)] cursor-pointer flex items-center justify-center gap-1.5 active:scale-95"
+                className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#343640] via-[#5A5852] to-[#A69D8E] hover:brightness-110 text-[#E9E5D9] border border-[#E9E5D9]/30 text-xs font-bold transition-all shadow-[0_0_15px_rgba(233,229,217,0.3)] cursor-pointer flex items-center justify-center gap-1.5 active:scale-95"
               >
                 <Smartphone className="w-3.5 h-3.5" />
                 <span>Jepret Kamera HP</span>
@@ -678,7 +678,7 @@ export const OutfitScannerModal: React.FC<OutfitScannerModalProps> = ({
                 <button
                   type="button"
                   onClick={handleOpenInNewTab}
-                  className="hover:text-cyan-300 transition-colors cursor-pointer flex items-center gap-1"
+                  className="hover:text-[#E9E5D9] transition-colors cursor-pointer flex items-center gap-1"
                 >
                   <ExternalLink className="w-3 h-3" />
                   <span>Tab Baru</span>
@@ -687,7 +687,7 @@ export const OutfitScannerModal: React.FC<OutfitScannerModalProps> = ({
                 <button
                   type="button"
                   onClick={() => startCamera(facingMode)}
-                  className="hover:text-cyan-300 transition-colors cursor-pointer flex items-center gap-1"
+                  className="hover:text-[#E9E5D9] transition-colors cursor-pointer flex items-center gap-1"
                 >
                   <RotateCcw className="w-3 h-3" />
                   <span>Coba Lagi</span>
@@ -700,26 +700,26 @@ export const OutfitScannerModal: React.FC<OutfitScannerModalProps> = ({
           <div className="absolute inset-8 sm:inset-10 pointer-events-none z-20 flex flex-col justify-between">
             {/* Top Corners */}
             <div className="flex justify-between items-start">
-              <div className="w-7 h-7 border-t-2 border-l-2 border-cyan-400 rounded-tl-lg shadow-[0_0_8px_rgba(34,211,238,0.5)]" />
-              <div className="w-7 h-7 border-t-2 border-r-2 border-cyan-400 rounded-tr-lg shadow-[0_0_8px_rgba(34,211,238,0.5)]" />
+              <div className="w-7 h-7 border-t-2 border-l-2 border-[#E9E5D9] rounded-tl-lg shadow-[0_0_10px_rgba(233,229,217,0.7)]" />
+              <div className="w-7 h-7 border-t-2 border-r-2 border-[#E9E5D9] rounded-tr-lg shadow-[0_0_10px_rgba(233,229,217,0.7)]" />
             </div>
 
             {/* Bottom Corners */}
             <div className="flex justify-between items-end">
-              <div className="w-7 h-7 border-b-2 border-l-2 border-cyan-400 rounded-bl-lg shadow-[0_0_8px_rgba(34,211,238,0.5)]" />
-              <div className="w-7 h-7 border-b-2 border-r-2 border-cyan-400 rounded-br-lg shadow-[0_0_8px_rgba(34,211,238,0.5)]" />
+              <div className="w-7 h-7 border-b-2 border-l-2 border-[#E9E5D9] rounded-bl-lg shadow-[0_0_10px_rgba(233,229,217,0.7)]" />
+              <div className="w-7 h-7 border-b-2 border-r-2 border-[#E9E5D9] rounded-br-lg shadow-[0_0_10px_rgba(233,229,217,0.7)]" />
             </div>
           </div>
 
           {/* GLOWING LASER SCAN ANIMATION BEAM */}
           <div className="absolute inset-x-0 pointer-events-none z-25 overflow-hidden h-full">
-            <div className="w-full h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent shadow-[0_0_18px_#22d3ee] animate-scan-beam" />
+            <div className="w-full h-1 bg-gradient-to-r from-transparent via-[#E9E5D9] to-transparent shadow-[0_0_20px_#E9E5D9] animate-scan-beam" />
           </div>
 
           {/* TIMER BIG COUNTDOWN DISPLAY */}
           {countdown !== null && (
             <div className="absolute inset-0 z-40 flex items-center justify-center bg-black/50 backdrop-blur-xs animate-in zoom-in-75 duration-200">
-              <div className="w-28 h-28 rounded-full bg-blue-600/95 text-white border-4 border-cyan-300 flex items-center justify-center shadow-[0_0_40px_rgba(34,211,238,0.85)] animate-pulse">
+              <div className="w-28 h-28 rounded-full bg-[#343640]/95 text-[#E9E5D9] border-4 border-[#E9E5D9] flex items-center justify-center shadow-[0_0_40px_rgba(233,229,217,0.75)] animate-pulse">
                 <span className="text-6xl font-black">{countdown}</span>
               </div>
             </div>
@@ -730,20 +730,20 @@ export const OutfitScannerModal: React.FC<OutfitScannerModalProps> = ({
             <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-slate-950/90 backdrop-blur-md px-6 text-center space-y-4 animate-in fade-in duration-200">
               {/* Glowing Pulse Radar */}
               <div className="relative w-20 h-20 flex items-center justify-center">
-                <div className="absolute inset-0 rounded-full border-2 border-cyan-500/30 animate-ping" />
-                <div className="w-16 h-16 rounded-full border-3 border-cyan-400 border-t-transparent animate-spin shadow-[0_0_24px_rgba(34,211,238,0.7)]" />
-                <Sparkles className="w-7 h-7 text-cyan-300 absolute" />
+                <div className="absolute inset-0 rounded-full border-2 border-[#A69D8E]/40 animate-ping" />
+                <div className="w-16 h-16 rounded-full border-3 border-[#E9E5D9] border-t-transparent animate-spin shadow-[0_0_24px_rgba(233,229,217,0.7)]" />
+                <Sparkles className="w-7 h-7 text-[#E9E5D9] absolute" />
               </div>
 
               <div className="space-y-1">
                 <h3 className="font-extrabold text-lg text-white tracking-tight">Cermin SAE Sedang Membaca</h3>
-                <p className="text-sm text-cyan-300 font-semibold transition-all duration-300 animate-pulse">
+                <p className="text-sm text-[#E9E5D9] font-semibold transition-all duration-300 animate-pulse">
                   {scanStepText}
                 </p>
               </div>
 
               <div className="w-48 h-1.5 bg-white/20 rounded-full overflow-hidden">
-                <div className="h-full bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 rounded-full animate-progress" />
+                <div className="h-full bg-gradient-to-r from-[#A69D8E] via-[#E9E5D9] to-[#343640] rounded-full animate-progress" />
               </div>
 
               <p className="text-[11px] text-slate-300 max-w-xs leading-relaxed">
@@ -794,11 +794,11 @@ export const OutfitScannerModal: React.FC<OutfitScannerModalProps> = ({
               className="relative w-20 h-20 sm:w-22 sm:h-22 rounded-full p-1.5 flex items-center justify-center cursor-pointer group active:scale-90 transition-all disabled:opacity-50"
               title="Ambil Pose di Cermin Sekarang"
             >
-              {/* Outer pulsing energy halo */}
-              <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-cyan-400 via-blue-500 to-indigo-600 opacity-80 group-hover:opacity-100 blur-xs transition-opacity animate-pulse" />
-              <div className="relative w-full h-full rounded-full bg-white flex items-center justify-center shadow-2xl group-hover:scale-98 transition-transform">
-                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 border-slate-900/10 bg-gradient-to-tr from-cyan-50 to-blue-50 flex items-center justify-center">
-                  <Camera className="w-7 h-7 sm:w-8 sm:h-8 text-slate-800" />
+              {/* Outer pulsing energy halo with Champagne & Taupe luxury tones */}
+              <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-[#A69D8E] via-[#E9E5D9] to-[#343640] opacity-85 group-hover:opacity-100 blur-[3px] transition-opacity animate-pulse" />
+              <div className="relative w-full h-full rounded-full bg-[#343640] flex items-center justify-center shadow-2xl group-hover:scale-98 transition-transform border border-[#E9E5D9]/40">
+                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 border-[#E9E5D9] bg-gradient-to-tr from-[#A69D8E]/30 to-[#E9E5D9]/20 flex items-center justify-center">
+                  <Camera className="w-7 h-7 sm:w-8 sm:h-8 text-[#E9E5D9]" />
                 </div>
               </div>
             </button>

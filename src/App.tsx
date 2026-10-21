@@ -196,7 +196,7 @@ export default function App() {
   return (
     <div className="w-full h-[100dvh] max-h-[100dvh] bg-slate-900/10 sm:bg-slate-900/30 flex items-center justify-center overflow-hidden select-none overscroll-none">
       {/* Smartphone Viewport Container (Edge-to-edge on phones, sleek frame on desktop) */}
-      <div className="relative w-full h-[100dvh] max-h-[100dvh] sm:max-w-[412px] sm:h-[96dvh] sm:max-h-[844px] bg-slate-50 overflow-hidden sm:rounded-[40px] shadow-[0_20px_60px_-15px_rgba(30,64,175,0.25)] sm:border-[7px] sm:border-slate-800/15 flex flex-col justify-between transition-all">
+      <div className="relative w-full h-[100dvh] max-h-[100dvh] sm:max-w-[412px] sm:h-[96dvh] sm:max-h-[844px] bg-[#E9E5D9] overflow-hidden sm:rounded-[40px] shadow-[0_25px_65px_-15px_rgba(52,54,64,0.38)] sm:border-[7px] sm:border-slate-800/15 flex flex-col justify-between transition-all">
         
         {/* Ambient Room / City Wallpaper Background (Wallpaper Bersih Tanpa Maskot) */}
         <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">

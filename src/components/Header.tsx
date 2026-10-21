@@ -65,52 +65,52 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <>
       <header className="flex items-center justify-between px-4 pt-3.5 pb-1 z-20 shrink-0 select-none">
-        {/* Pojok kiri atas: Tulisan SAE putih elegan & lebih besar (ketuk 3x untuk akses admin rahasia) */}
+        {/* Pojok kiri atas: Tulisan SAE putih Ivory elegan & lebih besar (ketuk 3x untuk akses admin rahasia) */}
         <div 
           onClick={handleBrandSecretTap}
           className="cursor-pointer active:scale-95 transition-all select-none flex flex-col py-0.5"
           title="SAE (Ketuk 3x untuk Akses Admin)"
         >
-          <span className="font-serif text-[42px] sm:text-[48px] font-black tracking-tight text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.65)] leading-none select-none">
+          <span className="font-serif text-[42px] sm:text-[48px] font-black tracking-tight text-[#E9E5D9] drop-shadow-[0_2px_12px_rgba(0,0,0,0.65)] leading-none select-none">
             SAE
           </span>
         </div>
 
         {/* Action Controls: Lonceng Notifikasi & PWA Install Kapsul */}
         <div className="flex items-center gap-2">
-          {/* Kapsul [ 📲 Install App | ✕ ] */}
+          {/* Kapsul [ 📲 Install App | ✕ ] dalam Charcoal & Champagne */}
           {!isInstalled && !isDismissed && (
-            <div className="flex items-center rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-xs border border-white/40 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center rounded-full bg-[#343640]/90 backdrop-blur-md text-[#E9E5D9] shadow-xs border border-[#A69D8E]/45 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
               <button
                 onClick={handleInstallClick}
                 aria-label="Install Aplikasi SAE"
                 title="Pasang aplikasi SAE ke menu HP"
-                className="flex items-center gap-1.5 pl-2.5 pr-1.5 py-1 hover:brightness-105 active:scale-95 transition-all cursor-pointer text-[10px] font-bold"
+                className="flex items-center gap-1.5 pl-2.5 pr-1.5 py-1 hover:brightness-110 active:scale-95 transition-all cursor-pointer text-[10px] font-bold"
               >
-                <Download className="w-3 h-3 text-white shrink-0" />
+                <Download className="w-3 h-3 text-[#E9E5D9] shrink-0" />
                 <span className="whitespace-nowrap">Install</span>
               </button>
-              <div className="w-[1px] h-3 bg-white/30" />
+              <div className="w-[1px] h-3 bg-[#A69D8E]/40" />
               <button
                 onClick={handleDismiss}
                 aria-label="Tutup dan sembunyikan ajakan install"
                 title="Tutup (tidak muncul lagi)"
-                className="pl-1.5 pr-2 py-1 text-white/80 hover:text-white hover:bg-white/20 active:scale-90 transition-all cursor-pointer flex items-center justify-center"
+                className="pl-1.5 pr-2 py-1 text-[#E9E5D9]/80 hover:text-[#E9E5D9] hover:bg-white/10 active:scale-90 transition-all cursor-pointer flex items-center justify-center"
               >
                 <X className="w-3 h-3" />
               </button>
             </div>
           )}
 
-          {/* Lonceng Notifikasi Bulat Transparan Kaca Kristal */}
+          {/* Lonceng Notifikasi Bulat Transparan Kaca Charcoal & Champagne */}
           <button
             onClick={onOpenNotifications}
             aria-label="Notifikasi"
-            className="relative w-9 h-9 rounded-full bg-white/20 hover:bg-white/35 active:bg-white/40 text-white flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.15)] transition-all active:scale-95 border border-white/40 backdrop-blur-md cursor-pointer"
+            className="relative w-9 h-9 rounded-full bg-[#343640]/40 hover:bg-[#343640]/60 active:bg-[#343640]/70 text-[#E9E5D9] flex items-center justify-center shadow-[0_4px_12px_rgba(52,54,64,0.25)] transition-all active:scale-95 border border-[#E9E5D9]/30 backdrop-blur-md cursor-pointer"
           >
-            <Bell className="w-4 h-4 text-white drop-shadow-xs" strokeWidth={2.2} />
+            <Bell className="w-4 h-4 text-[#E9E5D9] drop-shadow-xs" strokeWidth={2.2} />
             {unreadCount > 0 && (
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-white animate-pulse" />
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-amber-500 ring-2 ring-[#343640] animate-pulse" />
             )}
           </button>
         </div>

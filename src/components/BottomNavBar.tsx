@@ -56,10 +56,10 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
       {/* ======================================================== */}
       <nav
         aria-label="Navigasi Utama"
-        className="relative w-full flex items-center justify-between h-[52px] sm:h-[55px] rounded-[30px] bg-gradient-to-b from-white/95 via-white/85 to-white/90 backdrop-blur-2xl border border-white shadow-[0_10px_28px_-6px_rgba(37,99,235,0.18),0_2px_10px_rgba(0,0,0,0.03)] px-2"
+        className="relative w-full flex items-center justify-between h-[52px] sm:h-[55px] rounded-[30px] bg-[#E9E5D9]/92 backdrop-blur-2xl border border-[#A69D8E]/30 shadow-[0_12px_32px_-6px_rgba(52,54,64,0.18),0_2px_8px_rgba(0,0,0,0.04)] px-2"
       >
         {/* Subtle Sculpted Top Highlight Reflection */}
-        <div className="absolute inset-x-4 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-sky-300/50 to-transparent pointer-events-none" />
+        <div className="absolute inset-x-4 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-white/80 to-transparent pointer-events-none" />
 
         {/* 1. HOME TAB */}
         <button
@@ -68,25 +68,25 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
         >
           <div className="relative flex items-center justify-center">
             {activeTab === 'home' && (
-              <span className="absolute w-7 h-7 rounded-full bg-blue-100/70 -z-10 animate-in zoom-in-75 duration-200" />
+              <span className="absolute w-7 h-7 rounded-full bg-[#A69D8E]/20 -z-10 animate-in zoom-in-75 duration-200" />
             )}
             <Home
               className={`w-[18px] h-[18px] transition-colors duration-200 ${
                 activeTab === 'home'
-                  ? 'text-blue-600 fill-blue-600'
-                  : 'text-slate-400 group-hover:text-slate-600'
+                  ? 'text-[#343640] fill-[#343640]'
+                  : 'text-[#A69D8E] group-hover:text-[#343640]'
               }`}
             />
           </div>
           <span
             className={`text-[9.5px] font-bold mt-0.5 transition-colors ${
-              activeTab === 'home' ? 'text-blue-600' : 'text-slate-400 group-hover:text-slate-600'
+              activeTab === 'home' ? 'text-[#343640]' : 'text-[#A69D8E] group-hover:text-[#343640]'
             }`}
           >
             Home
           </span>
           {activeTab === 'home' && (
-            <span className="w-3.5 h-[2px] bg-blue-500 rounded-full mt-0.5 shadow-2xs" />
+            <span className="w-3.5 h-[2px] bg-[#343640] rounded-full mt-0.5 shadow-2xs" />
           )}
         </button>
 
@@ -98,49 +98,51 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
         >
           <div className="relative flex items-center justify-center">
             {activeTab === 'discover' && (
-              <span className="absolute w-7 h-7 rounded-full bg-blue-100/70 -z-10 animate-in zoom-in-75 duration-200" />
+              <span className="absolute w-7 h-7 rounded-full bg-[#A69D8E]/20 -z-10 animate-in zoom-in-75 duration-200" />
             )}
             <ShoppingBag
               className={`w-[18px] h-[18px] transition-colors duration-200 ${
                 activeTab === 'discover'
-                  ? 'text-blue-600 stroke-[2.4]'
-                  : 'text-slate-400 group-hover:text-slate-600'
+                  ? 'text-[#343640] stroke-[2.4]'
+                  : 'text-[#A69D8E] group-hover:text-[#343640]'
               }`}
             />
           </div>
           <span
             className={`text-[9.5px] font-bold mt-0.5 transition-colors ${
-              activeTab === 'discover' ? 'text-blue-600' : 'text-slate-400 group-hover:text-slate-600'
+              activeTab === 'discover' ? 'text-[#343640]' : 'text-[#A69D8E] group-hover:text-[#343640]'
             }`}
           >
             Toko
           </span>
           {activeTab === 'discover' && (
-            <span className="w-3.5 h-[2px] bg-blue-500 rounded-full mt-0.5 shadow-2xs" />
+            <span className="w-3.5 h-[2px] bg-[#343640] rounded-full mt-0.5 shadow-2xs" />
           )}
         </button>
 
         {/* 3. CENTER RAISED SCAN BUTTON (SCULPTED WAVE CENTER) */}
-        <div className="relative flex flex-col items-center justify-center flex-1 -mt-4.5 z-40">
-          <div className="relative group flex flex-col items-center">
-            {/* Ultra-Thin Delicate Breathing Glow Ring */}
-            <div className="absolute w-12 h-12 rounded-full bg-gradient-to-r from-sky-400/50 via-blue-500/50 to-cyan-400/50 blur-[6px] animate-breathing-halo pointer-events-none" />
-            <div className="absolute -inset-0.5 rounded-full border border-sky-300/40 animate-breathing-halo pointer-events-none" />
+        <div className="relative flex flex-col items-center justify-center flex-1 -mt-4 z-40">
+          <div className="relative flex flex-col items-center">
+            {/* Button container with subtle compact breathing glow */}
+            <div className="relative w-12 h-12 flex items-center justify-center">
+              {/* Compact subtle breathing halo - stays strictly around the circular button */}
+              <div className="absolute inset-[-2px] rounded-full bg-[#E9E5D9]/30 blur-[3px] animate-breathing-halo pointer-events-none" />
 
-            {/* Main Round Floating Scan Button */}
-            <button
-              onClick={onOpenScan}
-              aria-label="Scan Outfit Sekarang"
-              title="Scan Outfit dengan SAE AI"
-              className="relative w-12 h-12 rounded-full bg-gradient-to-tr from-blue-600 via-sky-500 to-cyan-400 text-white flex items-center justify-center border-2 border-white shadow-[0_6px_20px_-2px_rgba(37,99,235,0.45)] cursor-pointer overflow-hidden animate-breathing-orb transition-transform duration-300 active:scale-95 hover:brightness-105"
-            >
-              {/* Subtle top inner reflection */}
-              <div className="absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/35 to-transparent pointer-events-none rounded-t-full" />
-              <ScanBracketsIcon className="relative z-10 w-5.5 h-5.5 text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.3)]" />
-            </button>
+              {/* Main Round Floating Scan Button */}
+              <button
+                onClick={onOpenScan}
+                aria-label="Scan Outfit Sekarang"
+                title="Scan Outfit dengan SAE AI"
+                className="relative w-12 h-12 rounded-full bg-[#343640] text-[#E9E5D9] flex items-center justify-center border-2 border-[#E9E5D9] shadow-[0_3px_12px_rgba(52,54,64,0.28)] cursor-pointer overflow-hidden animate-breathing-orb transition-transform duration-300 active:scale-95 hover:brightness-110"
+              >
+                {/* Subtle top inner reflection */}
+                <div className="absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-[#E9E5D9]/30 to-transparent pointer-events-none rounded-t-full" />
+                <ScanBracketsIcon className="relative z-10 w-5.5 h-5.5 text-[#E9E5D9] drop-shadow-[0_1px_2px_rgba(0,0,0,0.3)]" />
+              </button>
+            </div>
 
             {/* Clear "Scan" Text Label */}
-            <span className="text-[9.5px] font-extrabold text-blue-600 mt-0.5 tracking-tight drop-shadow-2xs">
+            <span className="text-[9.5px] font-extrabold text-[#343640] mt-0.5 tracking-tight">
               Scan
             </span>
           </div>
@@ -153,25 +155,25 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
         >
           <div className="relative flex items-center justify-center">
             {activeTab === 'results' && (
-              <span className="absolute w-7 h-7 rounded-full bg-blue-100/70 -z-10 animate-in zoom-in-75 duration-200" />
+              <span className="absolute w-7 h-7 rounded-full bg-[#A69D8E]/20 -z-10 animate-in zoom-in-75 duration-200" />
             )}
             <ResultsBarsIcon
               className={`w-[17px] h-[17px] transition-colors duration-200 ${
                 activeTab === 'results'
-                  ? 'text-blue-600'
-                  : 'text-slate-400 group-hover:text-slate-600'
+                  ? 'text-[#343640]'
+                  : 'text-[#A69D8E] group-hover:text-[#343640]'
               }`}
             />
           </div>
           <span
             className={`text-[9.5px] font-semibold mt-0.5 transition-colors whitespace-nowrap ${
-              activeTab === 'results' ? 'text-blue-600 font-bold' : 'text-slate-400 group-hover:text-slate-600'
+              activeTab === 'results' ? 'text-[#343640] font-bold' : 'text-[#A69D8E] group-hover:text-[#343640]'
             }`}
           >
             My Results
           </span>
           {activeTab === 'results' && (
-            <span className="w-3.5 h-[2px] bg-blue-500 rounded-full mt-0.5 shadow-2xs" />
+            <span className="w-3.5 h-[2px] bg-[#343640] rounded-full mt-0.5 shadow-2xs" />
           )}
         </button>
 
@@ -182,25 +184,25 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
         >
           <div className="relative flex items-center justify-center">
             {activeTab === 'profile' && (
-              <span className="absolute w-7 h-7 rounded-full bg-blue-100/70 -z-10 animate-in zoom-in-75 duration-200" />
+              <span className="absolute w-7 h-7 rounded-full bg-[#A69D8E]/20 -z-10 animate-in zoom-in-75 duration-200" />
             )}
             <User
               className={`w-[18px] h-[18px] transition-colors duration-200 ${
                 activeTab === 'profile'
-                  ? 'text-blue-600 fill-blue-600/20'
-                  : 'text-slate-400 group-hover:text-slate-600'
+                  ? 'text-[#343640] fill-[#343640]/20'
+                  : 'text-[#A69D8E] group-hover:text-[#343640]'
               }`}
             />
           </div>
           <span
             className={`text-[9.5px] font-semibold mt-0.5 transition-colors ${
-              activeTab === 'profile' ? 'text-blue-600 font-bold' : 'text-slate-400 group-hover:text-slate-600'
+              activeTab === 'profile' ? 'text-[#343640] font-bold' : 'text-[#A69D8E] group-hover:text-[#343640]'
             }`}
           >
             Profile
           </span>
           {activeTab === 'profile' && (
-            <span className="w-3.5 h-[2px] bg-blue-500 rounded-full mt-0.5 shadow-2xs" />
+            <span className="w-3.5 h-[2px] bg-[#343640] rounded-full mt-0.5 shadow-2xs" />
           )}
         </button>
       </nav>
